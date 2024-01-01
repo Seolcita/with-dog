@@ -13,6 +13,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: 'http://localhost:3001/api/auth/google/redirect',
       scope: ['profile', 'email'],
+      grant_type: 'authorization_code',
     });
   }
 

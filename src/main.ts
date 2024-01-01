@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cors({ origin: 'http://localhost:3000' }));
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
