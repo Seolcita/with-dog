@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as dotenv from 'dotenv';
 
@@ -9,13 +8,7 @@ import { UserSchema } from '../user/schemas/user.schema';
 dotenv.config();
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
-    }),
-  ],
+  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])],
   providers: [
     {
       provide: 'AUTH_SERVICE',
