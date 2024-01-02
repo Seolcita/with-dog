@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import * as dotenv from 'dotenv';
+
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from '../user/schemas/user.schema';
+dotenv.config();
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])],

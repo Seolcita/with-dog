@@ -16,16 +16,35 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
+  // to get refresh token
+  authorizationParams(): { [key: string]: string } {
+    return {
+      access_type: 'offline',
+      prompt: 'consent',
+    };
+  }
+
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: any,
+  ) {
     //TODO: Remove console.log after development
     console.log(accessToken);
     console.log(refreshToken);
     console.log(profile);
-    const user = await this.authService.getOrCreateUser({
+    await this.authService.getOrCreateUser({
       email: profile.emails[0].value,
     });
     console.log('Validate');
-    console.log(user);
-    return user || null;
+
+    const user = {
+      email: profile.emails[0].value,
+      accessToken,
+      refreshToken,
+    };
+
+    done(null, user);
   }
 }
