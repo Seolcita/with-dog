@@ -1,9 +1,18 @@
-import { Request, Response } from 'express';
-import { Controller, Get, Inject, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
+import {
+  Controller,
+  Get,
+  Inject,
+  Req,
+  Request,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 
 import { GoogleAuthGuard } from './utils/Guards';
 import { AuthService } from './auth.service';
-import { UserProfile } from '../user/entities/user.entity';
+import { CheckTokenExpiryGuard } from './utils/CheckTokenExpiryGuard';
 
 @Controller('auth')
 export class AuthController {
@@ -18,31 +27,48 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Req() request: Request, @Res() response: Response) {
-    const user = request.user as UserProfile;
-    const token = this.authService.createToken(user);
-    response.redirect(
-      `http://localhost:3000/auth/signin-success?token=${token}`,
-    );
+  handleRedirect(@Req() request, @Res() response: Response) {
+    const googleToken = request.user.accessToken;
+    const googleRefreshToken = request.user.refreshToken;
+
+    response.cookie('access_token', googleToken, { httpOnly: true });
+    response.cookie('refresh_token', googleRefreshToken, {
+      httpOnly: true,
+    });
+
+    response.redirect('http://localhost:3000/auth/signin-success');
   }
 
-  @Get('verifyToken')
-  handleToken(@Req() request: Request, @Res() response: Response) {
-    if (request.headers.authorization) {
-      const token = request.headers.authorization.split(' ')[1];
-      const user = this.authService.verifyToken(token);
-      user && response.send({ id: user.id, email: user.email });
+  @UseGuards(CheckTokenExpiryGuard)
+  @Get('profile')
+  async getUserProfile(@Request() req) {
+    const accessToken = req.cookies['access_token'];
+    if (accessToken) {
+      const googleUserProfile =
+        await this.authService.getGoogleProfile(accessToken);
+
+      const dbUserProfile = await this.authService.getOrCreateUser({
+        email: googleUserProfile.data.email,
+      });
+
+      const user = {
+        ...dbUserProfile,
+        accessToken,
+        refreshToken: req.cookies['refresh_token'],
+      };
+
+      return user;
     } else {
-      console.log('No token'); //TODO: add better handling
+      throw new UnauthorizedException('No access token');
     }
   }
 
-  @Get('status')
-  user(@Req() request: Request) {
-    if (request.user) {
-      return { msg: 'Authenticated' };
-    } else {
-      return { msg: 'Not Authenticated' };
-    }
+  @Get('logout')
+  async logout(@Req() req, @Res() res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    const isloggedout = await this.authService.revokeGoogleToken(refreshToken);
+    isloggedout.status === 200 && res.json({ status: isloggedout.status });
   }
 }

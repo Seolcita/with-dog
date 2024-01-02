@@ -31,6 +31,10 @@ export class UserService {
   }
 
   async getUserById(id: number): Promise<UserProfile> {
+    if (id === undefined) {
+      throw new Error('Invalid id');
+    }
+
     const objectID = new mongoose.Types.ObjectId(id.toString());
     const user = await this.userModel.findById(objectID);
     return this.toObject(user);

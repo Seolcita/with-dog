@@ -13,20 +13,38 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: 'http://localhost:3001/api/auth/google/redirect',
       scope: ['profile', 'email'],
-      grant_type: 'authorization_code',
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
+  // to get refresh token
+  authorizationParams(): { [key: string]: string } {
+    return {
+      access_type: 'offline',
+      prompt: 'consent',
+    };
+  }
+
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: any,
+  ) {
     //TODO: Remove console.log after development
     console.log(accessToken);
     console.log(refreshToken);
     console.log(profile);
-    const user = await this.authService.getOrCreateUser({
+    await this.authService.getOrCreateUser({
       email: profile.emails[0].value,
     });
     console.log('Validate');
-    console.log(user);
-    return user || null;
+
+    const user = {
+      email: profile.emails[0].value,
+      accessToken,
+      refreshToken,
+    };
+
+    done(null, user);
   }
 }
