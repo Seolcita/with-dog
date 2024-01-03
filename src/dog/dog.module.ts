@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
+import { DogController } from './dog.controller';
+import { DogService } from './dog.service';
+import { RegisteredModules } from '../registered-modules/registered-modules';
 import { MongooseModule } from '@nestjs/mongoose';
-import * as dotenv from 'dotenv';
-
-import { AuthService } from '../auth/auth.service';
-import { UserService } from '../user/user.service';
 import { UserSchema } from '../user/schemas/user.schema';
-import { DogService } from '../dog/dog.service';
-import { DogSchema } from '../dog/schema/dog.schema';
+import { DogSchema } from './schema/dog.schema';
 import { QuestionnaireScreenSchema } from '../questionnaire/schema/questionnaire-screen.schema';
 import { QuestionnaireScreenFieldsSchema } from '../questionnaire/schema/questionnaire-screen-fields.schema';
-dotenv.config();
 
 @Module({
   imports: [
@@ -22,21 +19,9 @@ dotenv.config();
         schema: QuestionnaireScreenFieldsSchema,
       },
     ]),
+    RegisteredModules,
   ],
-  providers: [
-    {
-      provide: 'AUTH_SERVICE',
-      useClass: AuthService,
-    },
-    {
-      provide: 'USER_SERVICE',
-      useClass: UserService,
-    },
-    {
-      provide: 'DOG_SERVICE',
-      useClass: DogService,
-    },
-  ],
-  exports: ['AUTH_SERVICE', 'USER_SERVICE', 'DOG_SERVICE'],
+  controllers: [DogController],
+  providers: [DogService],
 })
-export class RegisteredModules {}
+export class DogModule {}

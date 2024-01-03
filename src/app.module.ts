@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { DogModule } from './dog/dog.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { PassportModule } from '@nestjs/passport';
     PassportModule.register({ session: true }),
     UserModule,
     AuthModule,
+    DogModule,
   ],
   controllers: [AppController],
   providers: [],

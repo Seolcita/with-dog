@@ -69,7 +69,7 @@ export class AuthService {
     return await this.userService.getOrCreateUser(userData);
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: string) {
     const user = await this.userService.getUserById(id);
     return user;
   }
