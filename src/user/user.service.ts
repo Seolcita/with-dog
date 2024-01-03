@@ -46,7 +46,20 @@ export class UserService {
     return {
       id: document._id.toString(),
       email: document.email,
-      dogs: document.dogs,
+      firstName: document.firstName,
+      lastName: document.lastName,
+      photoUrl: document.photoUrl,
+      dogs:
+        document.dogs &&
+        document.dogs.map((dog) => {
+          return {
+            id: dog._id.toString(),
+            ownerId: dog.ownerId,
+            name: dog.name,
+            registrationStatus: dog.registrationStatus,
+            screens: dog.screens,
+          };
+        }),
     };
   }
 }

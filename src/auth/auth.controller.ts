@@ -49,6 +49,9 @@ export class AuthController {
 
       const dbUserProfile = await this.authService.getOrCreateUser({
         email: googleUserProfile.data.email,
+        firstName: googleUserProfile.data.given_name,
+        lastName: googleUserProfile.data.family_name,
+        photoUrl: googleUserProfile.data.picture,
       });
 
       const user = {

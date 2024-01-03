@@ -5,8 +5,17 @@ import { Dog, DogSchema } from '../../dog/schema/dog.schema';
   timestamps: true,
 })
 export class User {
-  @Prop()
+  @Prop({ unique: true, index: true })
   email: string;
+
+  @Prop()
+  firstName: string;
+
+  @Prop()
+  lastName: string;
+
+  @Prop()
+  photoUrl: string;
 
   @Prop({ type: [DogSchema], default: [] })
   dogs: Dog[];
