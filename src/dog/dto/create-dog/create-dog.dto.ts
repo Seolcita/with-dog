@@ -1,5 +1,5 @@
-import { IsString } from 'class-validator';
-import { DogSize } from '../../entities/dog.entity';
+import { IsObject, IsString } from 'class-validator';
+import { Avatar, DogSize } from '../../entities/dog.entity';
 
 export class CreateDogNameDto {
   @IsString()
@@ -34,6 +34,17 @@ export class CreateHeavyCoatDto {
 export class CreateColdAdaptDto {
   @IsString()
   readonly coldAdapt: boolean;
+
+  @IsString()
+  readonly dogId: string;
+
+  @IsString()
+  readonly userId: string;
+}
+
+export class CreateSelectedAvatarDto {
+  @IsObject()
+  readonly selectedAvatar: Avatar;
 
   @IsString()
   readonly dogId: string;

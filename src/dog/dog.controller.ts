@@ -35,4 +35,15 @@ export class DogController {
     const dog = this.dogService.createColdAdapt({ dogId, coldAdapt, userId });
     return dog;
   }
+
+  @Post('avatar-selection')
+  createAvatarSelection(@Req() request) {
+    const { dogId, selectedAvatar, userId } = request.body;
+    const dog = this.dogService.createAvatarSelection({
+      dogId,
+      selectedAvatar,
+      userId,
+    });
+    return dog;
+  }
 }

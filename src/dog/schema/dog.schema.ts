@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
-import { DogSize, RegistrationStatus } from '../entities/dog.entity';
+import { Avatar, DogSize, RegistrationStatus } from '../entities/dog.entity';
 import {
   QuestionnaireScreen,
   QuestionnaireScreenSchema,
@@ -15,7 +15,7 @@ export class Dog {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   ownerId: User | Types.ObjectId;
 
-  @Prop()
+  @Prop({ unique: true, index: true })
   name: string;
 
   @Prop({ enum: DogSize })
@@ -29,6 +29,9 @@ export class Dog {
 
   @Prop()
   coldAdapt: boolean;
+
+  @Prop({ type: Object })
+  avatar: Avatar;
 
   @Prop({ enum: QuestionnaireScreenName })
   nextScreen: QuestionnaireScreenName;
