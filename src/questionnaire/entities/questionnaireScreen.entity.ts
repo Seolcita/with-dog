@@ -6,6 +6,11 @@ import {
 
 export interface QuestionnaireScreen {
   nameScreen: QuestionnaireScreenFields;
+  dogSizeScreen: QuestionnaireScreenFields;
+  heavyCoatScreen: QuestionnaireScreenFields;
+  coldAdaptScreen: QuestionnaireScreenFields;
+  selectedAvatarScreen: QuestionnaireScreenFields;
+  completionScreen: QuestionnaireScreenFields;
 }
 
 export interface QuestionnaireScreenDocument

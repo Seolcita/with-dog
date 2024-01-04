@@ -27,6 +27,11 @@ export interface DogProfile {
   nextScreen: QuestionnaireScreenName | null;
 }
 
+export interface Avatar {
+  name: string;
+  src: string;
+}
+
 export interface DogDocument
   extends Omit<DogProfile, 'id'>,
     QuestionnaireScreenDocument,

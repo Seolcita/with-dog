@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
-import { DogSize, RegistrationStatus } from '../entities/dog.entity';
+import { DogSize, RegistrationStatus, Avatar } from '../entities/dog.entity';
 import {
   QuestionnaireScreen,
   QuestionnaireScreenSchema,
@@ -29,6 +29,9 @@ export class Dog {
 
   @Prop()
   coldAdapt: boolean;
+
+  @Prop({ type: Object })
+  avatar: Avatar;
 
   @Prop({ enum: QuestionnaireScreenName })
   nextScreen: QuestionnaireScreenName;
