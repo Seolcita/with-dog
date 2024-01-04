@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
-import { RegistrationStatus } from '../entities/dog.entity';
+import { DogSize, RegistrationStatus } from '../entities/dog.entity';
 import {
   QuestionnaireScreen,
   QuestionnaireScreenSchema,
@@ -17,6 +17,9 @@ export class Dog {
 
   @Prop()
   name: string;
+
+  @Prop({ enum: DogSize })
+  dogSize: DogSize;
 
   @Prop({ enum: RegistrationStatus, default: RegistrationStatus.NOT_STARTED })
   registrationStatus: RegistrationStatus;

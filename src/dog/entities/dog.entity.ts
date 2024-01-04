@@ -11,10 +11,17 @@ export enum RegistrationStatus {
   COMPLETED = 'COMPLETED',
 }
 
+export enum DogSize {
+  SMALL = 'SMALL',
+  MEDIUM = 'MEDIUM',
+  LARGE = 'LARGE',
+}
+
 export interface DogProfile {
   id: string;
   ownerId: string;
   name: string;
+  dogSize: DogSize;
   registrationStatus: RegistrationStatus;
   screens: QuestionnaireScreen[];
   nextScreen: QuestionnaireScreenName | null;

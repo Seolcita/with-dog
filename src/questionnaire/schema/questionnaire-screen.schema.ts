@@ -7,6 +7,9 @@ import { QuestionnaireScreenFields } from './questionnaire-screen-fields.schema'
 export class QuestionnaireScreen {
   @Prop({ type: QuestionnaireScreenFields })
   nameScreen: QuestionnaireScreenFields;
+
+  @Prop({ type: QuestionnaireScreenFields })
+  dogSizeScreen: QuestionnaireScreenFields;
 }
 
 export const QuestionnaireScreenSchema =
