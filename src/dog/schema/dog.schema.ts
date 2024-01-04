@@ -6,6 +6,7 @@ import {
   QuestionnaireScreen,
   QuestionnaireScreenSchema,
 } from '../../questionnaire/schema/questionnaire-screen.schema';
+import { QuestionnaireScreenName } from '../../questionnaire/entities/questionnaireScreen-fields.entity';
 
 @Schema({
   timestamps: true,
@@ -19,6 +20,9 @@ export class Dog {
 
   @Prop({ enum: RegistrationStatus, default: RegistrationStatus.NOT_STARTED })
   registrationStatus: RegistrationStatus;
+
+  @Prop({ enum: QuestionnaireScreenName })
+  nextScreen: QuestionnaireScreenName;
 
   @Prop({ type: [QuestionnaireScreenSchema] })
   screens: QuestionnaireScreen[];

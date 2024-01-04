@@ -59,13 +59,23 @@ export class DogService {
     // Add questionnaire name screen to dog which matches with new dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
-      { $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen } },
+      {
+        $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.DOG_SIZE_SCREEN,
+        },
+      },
       {
         new: true,
         arrayFilters: [{ 'dog._id': newDog._id }],
       },
     );
 
-    return this.userService.toObject(user as UserDocument);
+    const userObject = this.userService.toObject(user as UserDocument);
+    const result = userObject.dogs.find(
+      (dog) => dog.id === newDog._id.toString(),
+    );
+
+    return result;
   }
 }

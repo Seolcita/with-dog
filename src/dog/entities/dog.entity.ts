@@ -3,6 +3,7 @@ import {
   QuestionnaireScreen,
   QuestionnaireScreenDocument,
 } from '../../questionnaire/entities/questionnaireScreen.entity';
+import { QuestionnaireScreenName } from '../../questionnaire/entities/questionnaireScreen-fields.entity';
 
 export enum RegistrationStatus {
   NOT_STARTED = 'NOT_STARTED',
@@ -16,6 +17,7 @@ export interface DogProfile {
   name: string;
   registrationStatus: RegistrationStatus;
   screens: QuestionnaireScreen[];
+  nextScreen: QuestionnaireScreenName | null;
 }
 
 export interface DogDocument
