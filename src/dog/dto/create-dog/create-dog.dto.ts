@@ -19,3 +19,14 @@ export class CreateDogSizeDto {
   @IsString()
   readonly userId: string;
 }
+
+export class CreateHeavyCoatDto {
+  @IsString()
+  readonly heavyCoat: boolean;
+
+  @IsString()
+  readonly dogId: string;
+
+  @IsString()
+  readonly userId: string;
+}

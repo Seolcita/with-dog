@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import {
   CreateDogNameDto,
   CreateDogSizeDto,
+  CreateHeavyCoatDto,
 } from './dto/create-dog/create-dog.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../user/schemas/user.schema';
@@ -83,8 +84,6 @@ export class DogService {
   }
 
   async createDogSize({ dogId, dogSize, userId }: CreateDogSizeDto) {
-    console.log('BE DOG', dogId, dogSize, userId);
-
     // Create new questionnaire dog size screen
     const dogSizeQuestionnaireScreen = new this.questionnaireScreenModel({
       dogSizeScreen: {
@@ -115,5 +114,40 @@ export class DogService {
     const result = userObject.dogs.find((dog) => dog.id === dogId);
 
     return result;
+  }
+
+  async createHeavyCoat({ dogId, heavyCoat, userId }: CreateHeavyCoatDto) {
+    // Create new questionnaire dog size screen
+    const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
+      dogSizeScreen: {
+        step: 3,
+        previousScreen: QuestionnaireScreenName.DOG_SIZE_SCREEN,
+        nextScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+        isCompleted: true,
+      },
+    });
+
+    // Add questionnaire dog size screen and dog size to dog which matches with dog id
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+          'dogs.$[dog].heavyCoat': heavyCoat,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    const userObject = this.userService.toObject(user as UserDocument);
+
+    return (
+      userObject.dogs.length > 0 &&
+      userObject.dogs.find((dog) => dog.id === dogId)
+    );
   }
 }
