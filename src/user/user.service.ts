@@ -37,7 +37,7 @@ export class UserService {
       throw new Error('Invalid id');
     }
 
-    const objectID = new mongoose.Types.ObjectId(id.toString());
+    const objectID = new mongoose.Types.ObjectId(id);
     const user = await this.userModel.findById(objectID);
     return this.toObject(user as UserDocument);
   }
@@ -56,6 +56,7 @@ export class UserService {
             id: dog._id.toString(),
             ownerId: dog.ownerId,
             name: dog.name,
+            nextScreen: dog.nextScreen,
             registrationStatus: dog.registrationStatus,
             screens: dog.screens,
           };

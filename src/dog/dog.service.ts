@@ -23,6 +23,7 @@ export class DogService {
   ) {}
 
   async createDogName({ name, userId }: CreateDogNameDto) {
+    console.log('🤬', name, userId);
     // Create new dog with name
     const newDog = new this.dogModel({
       name,
@@ -57,15 +58,36 @@ export class DogService {
     });
 
     // Add questionnaire name screen to dog which matches with new dog id
-    const user = await this.userModel.findOneAndUpdate(
-      { _id: userId },
-      { $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen } },
-      {
-        new: true,
-        arrayFilters: [{ 'dog._id': newDog._id }],
-      },
-    );
+    try {
+      const user = await this.userModel.findOneAndUpdate(
+        { _id: userId },
+        {
+          $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen },
+          $set: {
+            'dogs.$[dog].nextScreen': QuestionnaireScreenName.DOG_SIZE_SCREEN,
+          },
+        },
+        {
+          new: true,
+          arrayFilters: [{ 'dog._id': newDog._id }],
+        },
+      );
 
-    return this.userService.toObject(user as UserDocument);
+      if (!user) {
+        throw new NotFoundException(`User not found with id: ${userId}`);
+      }
+
+      console.log('🤬', user);
+      return this.userService.toObject(user as UserDocument);
+      // const result = userObject.dogs.find(
+      //   (dog) => dog.id === newDog._id.toString(),
+      // );
+
+      // console.log('🤬🤬🤬', result);
+      // return result;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error while adding questionnaire name screen to dog');
+    }
   }
 }
