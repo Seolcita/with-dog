@@ -5,6 +5,7 @@ import {
   CreateDogNameDto,
   CreateDogSizeDto,
   CreateHeavyCoatDto,
+  CreateSelectedAvatarDto,
 } from './dto/create-dog/create-dog.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../user/schemas/user.schema';
@@ -14,7 +15,7 @@ import { QuestionnaireScreenFields } from '../questionnaire/schema/questionnaire
 import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-screen.schema';
 import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
 import { UserDocument } from '../user/entities/user.entity';
-import { DogProfile } from './entities/dog.entity';
+import { DogProfile, RegistrationStatus } from './entities/dog.entity';
 
 @Injectable()
 export class DogService {
@@ -33,7 +34,7 @@ export class DogService {
     const newDog = new this.dogModel({
       name,
       ownerId: userId,
-      registrationStatus: 'IN_PROGRESS',
+      registrationStatus: RegistrationStatus.IN_PROGRESS,
     });
 
     // Add new dog to user
@@ -101,8 +102,8 @@ export class DogService {
       {
         $push: { 'dogs.$[dog].screens': dogSizeQuestionnaireScreen },
         $set: {
-          'dogs.$[dog].nextScreen': QuestionnaireScreenName.HEAVY_COAT_SCREEN,
           'dogs.$[dog].dogSize': dogSize,
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.HEAVY_COAT_SCREEN,
         },
       },
       {
@@ -133,8 +134,8 @@ export class DogService {
       {
         $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
         $set: {
-          'dogs.$[dog].nextScreen': QuestionnaireScreenName.COLD_ADAPT_SCREEN,
           'dogs.$[dog].heavyCoat': heavyCoat,
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.COLD_ADAPT_SCREEN,
         },
       },
       {
@@ -165,9 +166,48 @@ export class DogService {
       {
         $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
         $set: {
+          'dogs.$[dog].coldAdapt': coldAdapt,
           'dogs.$[dog].nextScreen':
             QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
-          'dogs.$[dog].coldAdapt': coldAdapt,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    const userObject = this.userService.toObject(user as UserDocument);
+
+    return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
+  }
+
+  async createAvatarSelection({
+    dogId,
+    selectedAvatar,
+    userId,
+  }: CreateSelectedAvatarDto) {
+    console.log('selectedAvatar 🎄', selectedAvatar);
+    // Create new questionnaire avatar selection screen
+    const AvatarSelectionQuestionnaireScreen =
+      new this.questionnaireScreenModel({
+        avatarSelectionScreen: {
+          step: 5,
+          previousScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+          nextScreen: QuestionnaireScreenName.COMPLETION_SCREEN,
+          isCompleted: true,
+        },
+      });
+
+    // Add questionnaire avatar selection screen and avatar selection data to dog which matches with dog id
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: { 'dogs.$[dog].screens': AvatarSelectionQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].avatar': selectedAvatar,
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
+          'dogs.$[dog].registrationStatus': RegistrationStatus.COMPLETED,
         },
       },
       {
