@@ -51,12 +51,15 @@ export class UserService {
       photoUrl: document.photoUrl,
       dogs:
         document.dogs &&
+        document.dogs.length > 0 &&
         document.dogs.map((dog) => {
           return {
             id: dog._id.toString(),
             ownerId: dog.ownerId,
             name: dog.name,
             dogSize: dog.dogSize,
+            heavyCoat: dog.heavyCoat,
+            coldAdapt: dog.coldAdapt,
             registrationStatus: dog.registrationStatus,
             screens: dog.screens,
             nextScreen: dog.nextScreen,

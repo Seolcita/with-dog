@@ -10,6 +10,12 @@ export class QuestionnaireScreen {
 
   @Prop({ type: QuestionnaireScreenFields })
   dogSizeScreen: QuestionnaireScreenFields;
+
+  @Prop({ type: QuestionnaireScreenFields })
+  heavyCoatScreen: QuestionnaireScreenFields;
+
+  @Prop({ type: QuestionnaireScreenFields })
+  coldAdaptScreen: QuestionnaireScreenFields;
 }
 
 export const QuestionnaireScreenSchema =

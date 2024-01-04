@@ -1,8 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import {
+  CreateColdAdaptDto,
   CreateDogNameDto,
   CreateDogSizeDto,
+  CreateHeavyCoatDto,
 } from './dto/create-dog/create-dog.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../user/schemas/user.schema';
@@ -12,6 +14,7 @@ import { QuestionnaireScreenFields } from '../questionnaire/schema/questionnaire
 import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-screen.schema';
 import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
 import { UserDocument } from '../user/entities/user.entity';
+import { DogProfile } from './entities/dog.entity';
 
 @Injectable()
 export class DogService {
@@ -75,16 +78,13 @@ export class DogService {
     );
 
     const userObject = this.userService.toObject(user as UserDocument);
-    const result = userObject.dogs.find(
+
+    return (userObject.dogs as DogProfile[]).find(
       (dog) => dog.id === newDog._id.toString(),
     );
-
-    return result;
   }
 
   async createDogSize({ dogId, dogSize, userId }: CreateDogSizeDto) {
-    console.log('BE DOG', dogId, dogSize, userId);
-
     // Create new questionnaire dog size screen
     const dogSizeQuestionnaireScreen = new this.questionnaireScreenModel({
       dogSizeScreen: {
@@ -95,7 +95,7 @@ export class DogService {
       },
     });
 
-    // Add questionnaire dog size screen and dog size to dog which matches with dog id
+    // Add questionnaire dog size screen and dog size data to dog which matches with dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -112,8 +112,72 @@ export class DogService {
     );
 
     const userObject = this.userService.toObject(user as UserDocument);
-    const result = userObject.dogs.find((dog) => dog.id === dogId);
 
-    return result;
+    return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
+  }
+
+  async createHeavyCoat({ dogId, heavyCoat, userId }: CreateHeavyCoatDto) {
+    // Create new questionnaire heavy coat screen
+    const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
+      heavyCoatScreen: {
+        step: 3,
+        previousScreen: QuestionnaireScreenName.DOG_SIZE_SCREEN,
+        nextScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+        isCompleted: true,
+      },
+    });
+
+    // Add questionnaire heavy coat screen and heavy coat data to dog which matches with dog id
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+          'dogs.$[dog].heavyCoat': heavyCoat,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    const userObject = this.userService.toObject(user as UserDocument);
+
+    return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
+  }
+
+  async createColdAdapt({ dogId, coldAdapt, userId }: CreateColdAdaptDto) {
+    // Create new questionnaire cold adapt screen
+    const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
+      coldAdaptScreen: {
+        step: 4,
+        previousScreen: QuestionnaireScreenName.HEAVY_COAT_SCREEN,
+        nextScreen: QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
+        isCompleted: true,
+      },
+    });
+
+    // Add questionnaire cold adapt screen and cold adapt data to dog which matches with dog id
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].nextScreen':
+            QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
+          'dogs.$[dog].coldAdapt': coldAdapt,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    const userObject = this.userService.toObject(user as UserDocument);
+
+    return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
   }
 }

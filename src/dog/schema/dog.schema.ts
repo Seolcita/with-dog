@@ -24,6 +24,12 @@ export class Dog {
   @Prop({ enum: RegistrationStatus, default: RegistrationStatus.NOT_STARTED })
   registrationStatus: RegistrationStatus;
 
+  @Prop()
+  heavyCoat: boolean;
+
+  @Prop()
+  coldAdapt: boolean;
+
   @Prop({ enum: QuestionnaireScreenName })
   nextScreen: QuestionnaireScreenName;
 
