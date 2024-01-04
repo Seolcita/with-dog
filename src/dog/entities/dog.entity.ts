@@ -3,6 +3,7 @@ import {
   QuestionnaireScreen,
   QuestionnaireScreenDocument,
 } from '../../questionnaire/entities/questionnaireScreen.entity';
+import { QuestionnaireScreenName } from '../../questionnaire/entities/questionnaireScreen-fields.entity';
 
 export enum RegistrationStatus {
   NOT_STARTED = 'NOT_STARTED',
@@ -10,12 +11,20 @@ export enum RegistrationStatus {
   COMPLETED = 'COMPLETED',
 }
 
+export enum DogSize {
+  SMALL = 'SMALL',
+  MEDIUM = 'MEDIUM',
+  LARGE = 'LARGE',
+}
+
 export interface DogProfile {
   id: string;
   ownerId: string;
   name: string;
+  dogSize: DogSize;
   registrationStatus: RegistrationStatus;
   screens: QuestionnaireScreen[];
+  nextScreen: QuestionnaireScreenName | null;
 }
 
 export interface DogDocument

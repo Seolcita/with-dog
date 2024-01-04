@@ -1,6 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { CreateDogNameDto } from './dto/create-dog/create-dog-name.dto';
+import {
+  CreateDogNameDto,
+  CreateDogSizeDto,
+} from './dto/create-dog/create-dog.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../user/schemas/user.schema';
 import mongoose from 'mongoose';
@@ -59,13 +62,58 @@ export class DogService {
     // Add questionnaire name screen to dog which matches with new dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
-      { $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen } },
+      {
+        $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.DOG_SIZE_SCREEN,
+        },
+      },
       {
         new: true,
         arrayFilters: [{ 'dog._id': newDog._id }],
       },
     );
 
-    return this.userService.toObject(user as UserDocument);
+    const userObject = this.userService.toObject(user as UserDocument);
+    const result = userObject.dogs.find(
+      (dog) => dog.id === newDog._id.toString(),
+    );
+
+    return result;
+  }
+
+  async createDogSize({ dogId, dogSize, userId }: CreateDogSizeDto) {
+    console.log('BE DOG', dogId, dogSize, userId);
+
+    // Create new questionnaire dog size screen
+    const dogSizeQuestionnaireScreen = new this.questionnaireScreenModel({
+      dogSizeScreen: {
+        step: 2,
+        previousScreen: QuestionnaireScreenName.NAME_SCREEN,
+        nextScreen: QuestionnaireScreenName.HEAVY_COAT_SCREEN,
+        isCompleted: true,
+      },
+    });
+
+    // Add questionnaire dog size screen and dog size to dog which matches with dog id
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: { 'dogs.$[dog].screens': dogSizeQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.HEAVY_COAT_SCREEN,
+          'dogs.$[dog].dogSize': dogSize,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    const userObject = this.userService.toObject(user as UserDocument);
+    const result = userObject.dogs.find((dog) => dog.id === dogId);
+
+    return result;
   }
 }
