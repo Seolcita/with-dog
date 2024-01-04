@@ -28,4 +28,11 @@ export class DogController {
     const dog = this.dogService.createHeavyCoat({ dogId, heavyCoat, userId });
     return dog;
   }
+
+  @Post('cold-adapt')
+  createColdAdapt(@Req() request) {
+    const { dogId, coldAdapt, userId } = request.body;
+    const dog = this.dogService.createColdAdapt({ dogId, coldAdapt, userId });
+    return dog;
+  }
 }

@@ -58,6 +58,8 @@ export class UserService {
             ownerId: dog.ownerId,
             name: dog.name,
             dogSize: dog.dogSize,
+            heavyCoat: dog.heavyCoat,
+            coldAdapt: dog.coldAdapt,
             registrationStatus: dog.registrationStatus,
             screens: dog.screens,
             nextScreen: dog.nextScreen,

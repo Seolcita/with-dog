@@ -27,6 +27,9 @@ export class Dog {
   @Prop()
   heavyCoat: boolean;
 
+  @Prop()
+  coldAdapt: boolean;
+
   @Prop({ enum: QuestionnaireScreenName })
   nextScreen: QuestionnaireScreenName;
 
