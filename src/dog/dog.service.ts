@@ -29,7 +29,7 @@ export class DogService {
     @Inject('USER_SERVICE') private userService: UserService,
   ) {}
 
-  async createDogName({ name, userId }: CreateDogNameDto) {
+  async createDogName({ name, userId }: CreateDogNameDto): Promise<DogProfile> {
     // Create new dog with name
     const newDog = new this.dogModel({
       name,
@@ -85,7 +85,11 @@ export class DogService {
     );
   }
 
-  async createDogSize({ dogId, dogSize, userId }: CreateDogSizeDto) {
+  async createDogSize({
+    dogId,
+    dogSize,
+    userId,
+  }: CreateDogSizeDto): Promise<DogProfile> {
     // Create new questionnaire dog size screen
     const dogSizeQuestionnaireScreen = new this.questionnaireScreenModel({
       dogSizeScreen: {
@@ -117,7 +121,11 @@ export class DogService {
     return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
   }
 
-  async createHeavyCoat({ dogId, heavyCoat, userId }: CreateHeavyCoatDto) {
+  async createHeavyCoat({
+    dogId,
+    heavyCoat,
+    userId,
+  }: CreateHeavyCoatDto): Promise<DogProfile> {
     // Create new questionnaire heavy coat screen
     const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
       heavyCoatScreen: {
@@ -149,7 +157,11 @@ export class DogService {
     return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
   }
 
-  async createColdAdapt({ dogId, coldAdapt, userId }: CreateColdAdaptDto) {
+  async createColdAdapt({
+    dogId,
+    coldAdapt,
+    userId,
+  }: CreateColdAdaptDto): Promise<DogProfile> {
     // Create new questionnaire cold adapt screen
     const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
       coldAdaptScreen: {
@@ -186,8 +198,7 @@ export class DogService {
     dogId,
     selectedAvatar,
     userId,
-  }: CreateSelectedAvatarDto) {
-    console.log('selectedAvatar 🎄', selectedAvatar);
+  }: CreateSelectedAvatarDto): Promise<DogProfile> {
     // Create new questionnaire avatar selection screen
     const AvatarSelectionQuestionnaireScreen =
       new this.questionnaireScreenModel({
