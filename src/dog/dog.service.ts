@@ -5,6 +5,7 @@ import {
   CreateDogNameDto,
   CreateDogSizeDto,
   CreateHeavyCoatDto,
+  CreateLocationDto,
   CreateSelectedAvatarDto,
 } from './dto/create-dog/create-dog.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -179,6 +180,42 @@ export class DogService {
         $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
         $set: {
           'dogs.$[dog].coldAdapt': coldAdapt,
+          'dogs.$[dog].nextScreen': QuestionnaireScreenName.LOCATION_SCREEN,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    const userObject = this.userService.toObject(user as UserDocument);
+
+    return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
+  }
+
+  async createLocation({
+    dogId,
+    location,
+    userId,
+  }: CreateLocationDto): Promise<DogProfile> {
+    // Create new questionnaire location screen
+    const locationQuestionnaireScreen = new this.questionnaireScreenModel({
+      locationScreen: {
+        step: 5,
+        previousScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+        nextScreen: QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
+        isCompleted: true,
+      },
+    });
+
+    // Add questionnaire location screen and location data to dog which matches with dog id
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: { 'dogs.$[dog].screens': locationQuestionnaireScreen },
+        $set: {
+          'dogs.$[dog].location': location,
           'dogs.$[dog].nextScreen':
             QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
         },
@@ -203,8 +240,8 @@ export class DogService {
     const AvatarSelectionQuestionnaireScreen =
       new this.questionnaireScreenModel({
         avatarSelectionScreen: {
-          step: 5,
-          previousScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+          step: 6,
+          previousScreen: QuestionnaireScreenName.LOCATION_SCREEN,
           nextScreen: QuestionnaireScreenName.COMPLETION_SCREEN,
           isCompleted: true,
         },

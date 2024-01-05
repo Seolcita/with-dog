@@ -42,6 +42,17 @@ export class CreateColdAdaptDto {
   readonly userId: string;
 }
 
+export class CreateLocationDto {
+  @IsString()
+  readonly location: string;
+
+  @IsString()
+  readonly dogId: string;
+
+  @IsString()
+  readonly userId: string;
+}
+
 export class CreateSelectedAvatarDto {
   @IsObject()
   readonly selectedAvatar: Avatar;

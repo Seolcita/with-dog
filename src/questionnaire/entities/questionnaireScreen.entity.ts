@@ -9,6 +9,7 @@ export interface QuestionnaireScreen {
   dogSizeScreen: QuestionnaireScreenFields;
   heavyCoatScreen: QuestionnaireScreenFields;
   coldAdaptScreen: QuestionnaireScreenFields;
+  locationScreen: QuestionnaireScreenFields;
   avatarSelectionScreen: QuestionnaireScreenFields;
   completionScreen: QuestionnaireScreenFields;
 }
