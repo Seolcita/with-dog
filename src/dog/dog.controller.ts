@@ -1,5 +1,6 @@
 import { Controller, Inject, Post, Req } from '@nestjs/common';
 import { DogService } from './dog.service';
+import { DogProfile } from './entities/dog.entity';
 
 @Controller('dog')
 export class DogController {
@@ -9,35 +10,35 @@ export class DogController {
   ) {}
 
   @Post('name')
-  createDogName(@Req() request) {
+  async createDogName(@Req() request): Promise<DogProfile> {
     const { name, userId } = request.body;
     const dog = this.dogService.createDogName({ name, userId });
     return dog;
   }
 
   @Post('dog-size')
-  createDogSize(@Req() request) {
+  async createDogSize(@Req() request): Promise<DogProfile> {
     const { dogId, dogSize, userId } = request.body;
     const dog = this.dogService.createDogSize({ dogId, dogSize, userId });
     return dog;
   }
 
   @Post('heavy-coat')
-  createHeavyCoat(@Req() request) {
+  async createHeavyCoat(@Req() request): Promise<DogProfile> {
     const { dogId, heavyCoat, userId } = request.body;
     const dog = this.dogService.createHeavyCoat({ dogId, heavyCoat, userId });
     return dog;
   }
 
   @Post('cold-adapt')
-  createColdAdapt(@Req() request) {
+  async createColdAdapt(@Req() request): Promise<DogProfile> {
     const { dogId, coldAdapt, userId } = request.body;
     const dog = this.dogService.createColdAdapt({ dogId, coldAdapt, userId });
     return dog;
   }
 
   @Post('avatar-selection')
-  createAvatarSelection(@Req() request) {
+  async createAvatarSelection(@Req() request): Promise<DogProfile> {
     const { dogId, selectedAvatar, userId } = request.body;
     const dog = this.dogService.createAvatarSelection({
       dogId,
