@@ -37,6 +37,13 @@ export class DogController {
     return dog;
   }
 
+  @Post('location')
+  async createLocation(@Req() request): Promise<DogProfile> {
+    const { dogId, location, userId } = request.body;
+    const dog = this.dogService.createLocation({ dogId, location, userId });
+    return dog;
+  }
+
   @Post('avatar-selection')
   async createAvatarSelection(@Req() request): Promise<DogProfile> {
     const { dogId, selectedAvatar, userId } = request.body;

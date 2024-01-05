@@ -18,6 +18,9 @@ export class QuestionnaireScreen {
   coldAdaptScreen: QuestionnaireScreenFields;
 
   @Prop({ type: QuestionnaireScreenFields })
+  locationScreen: QuestionnaireScreenFields;
+
+  @Prop({ type: QuestionnaireScreenFields })
   avatarSelectionScreen: QuestionnaireScreenFields;
 }
 
