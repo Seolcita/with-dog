@@ -49,6 +49,7 @@ export class UserService {
       firstName: document.firstName,
       lastName: document.lastName,
       photoUrl: document.photoUrl,
+      location: document.location,
       dogs:
         document.dogs &&
         document.dogs.length > 0 &&
@@ -60,7 +61,7 @@ export class UserService {
             dogSize: dog.dogSize,
             heavyCoat: dog.heavyCoat,
             coldAdapt: dog.coldAdapt,
-            location: dog.location,
+            avatar: dog.avatar,
             registrationStatus: dog.registrationStatus,
             screens: dog.screens,
             nextScreen: dog.nextScreen,

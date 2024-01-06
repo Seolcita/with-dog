@@ -80,7 +80,6 @@ export class DogService {
     );
 
     const userObject = this.userService.toObject(user as UserDocument);
-
     return (userObject.dogs as DogProfile[]).find(
       (dog) => dog.id === newDog._id.toString(),
     );
@@ -215,7 +214,7 @@ export class DogService {
       {
         $push: { 'dogs.$[dog].screens': locationQuestionnaireScreen },
         $set: {
-          'dogs.$[dog].location': location,
+          location,
           'dogs.$[dog].nextScreen':
             QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
         },
@@ -252,7 +251,7 @@ export class DogService {
       { _id: userId },
       {
         $push: { 'dogs.$[dog].screens': AvatarSelectionQuestionnaireScreen },
-        $set: {
+        $set: selectedAvatar && {
           'dogs.$[dog].avatar': selectedAvatar,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
           'dogs.$[dog].registrationStatus': RegistrationStatus.COMPLETED,
