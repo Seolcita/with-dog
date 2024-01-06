@@ -215,7 +215,7 @@ export class DogService {
       {
         $push: { 'dogs.$[dog].screens': locationQuestionnaireScreen },
         $set: {
-          'dogs.$[dog].location': location,
+          location,
           'dogs.$[dog].nextScreen':
             QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
         },

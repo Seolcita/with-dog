@@ -7,6 +7,7 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   photoUrl: string;
+  location: string;
   dogs: DogProfile[] | [];
 }
 

@@ -24,7 +24,6 @@ export interface DogProfile {
   dogSize: DogSize;
   heavyCoat: boolean;
   coldAdapt: boolean;
-  location: string;
   registrationStatus: RegistrationStatus;
   screens: QuestionnaireScreen[];
   nextScreen: QuestionnaireScreenName | null;

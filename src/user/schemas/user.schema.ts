@@ -17,6 +17,9 @@ export class User {
   @Prop()
   photoUrl: string;
 
+  @Prop()
+  location: string;
+
   @Prop({ type: [DogSchema], default: [] })
   dogs: Dog[];
 }

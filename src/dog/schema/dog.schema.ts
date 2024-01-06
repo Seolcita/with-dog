@@ -30,9 +30,6 @@ export class Dog {
   @Prop()
   coldAdapt: boolean;
 
-  @Prop()
-  location: string;
-
   @Prop({ type: Object })
   avatar: Avatar;
 
