@@ -79,9 +79,7 @@ export class DogService {
       },
     );
 
-    console.log('user⭐️', user);
     const userObject = this.userService.toObject(user as UserDocument);
-    console.log('userObject🚨', userObject);
     return (userObject.dogs as DogProfile[]).find(
       (dog) => dog.id === newDog._id.toString(),
     );
