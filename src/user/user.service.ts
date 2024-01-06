@@ -61,6 +61,7 @@ export class UserService {
             dogSize: dog.dogSize,
             heavyCoat: dog.heavyCoat,
             coldAdapt: dog.coldAdapt,
+            avatar: dog.avatar,
             registrationStatus: dog.registrationStatus,
             screens: dog.screens,
             nextScreen: dog.nextScreen,

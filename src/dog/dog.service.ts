@@ -79,8 +79,9 @@ export class DogService {
       },
     );
 
+    console.log('user⭐️', user);
     const userObject = this.userService.toObject(user as UserDocument);
-
+    console.log('userObject🚨', userObject);
     return (userObject.dogs as DogProfile[]).find(
       (dog) => dog.id === newDog._id.toString(),
     );
@@ -252,7 +253,7 @@ export class DogService {
       { _id: userId },
       {
         $push: { 'dogs.$[dog].screens': AvatarSelectionQuestionnaireScreen },
-        $set: {
+        $set: selectedAvatar && {
           'dogs.$[dog].avatar': selectedAvatar,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
           'dogs.$[dog].registrationStatus': RegistrationStatus.COMPLETED,
