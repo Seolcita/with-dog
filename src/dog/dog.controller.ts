@@ -1,6 +1,7 @@
-import { Controller, Inject, Post, Req } from '@nestjs/common';
+import { Controller, Inject, Post, Put, Req } from '@nestjs/common';
 import { DogService } from './dog.service';
 import { DogProfile } from './entities/dog.entity';
+import { UserProfile } from '../user/entities/user.entity';
 
 @Controller('dog')
 export class DogController {
@@ -14,6 +15,14 @@ export class DogController {
     const { name, userId } = request.body;
     const dog = this.dogService.createDogName({ name, userId });
     return dog;
+  }
+
+  @Put('name/edit')
+  async editDogName(@Req() request): Promise<UserProfile> {
+    const { name, userId, dogId } = request.body;
+    const user = this.dogService.updateDogName({ name, userId, dogId });
+    console.log('edited dog name', user);
+    return user;
   }
 
   @Post('dog-size')

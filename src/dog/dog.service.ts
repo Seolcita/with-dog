@@ -15,8 +15,9 @@ import { Dog } from './schema/dog.schema';
 import { QuestionnaireScreenFields } from '../questionnaire/schema/questionnaire-screen-fields.schema';
 import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-screen.schema';
 import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
-import { UserDocument } from '../user/entities/user.entity';
+import { UserDocument, UserProfile } from '../user/entities/user.entity';
 import { DogProfile, RegistrationStatus } from './entities/dog.entity';
+import { UpdateDogNameDto } from './dto/update-dog/update-dog.dto';
 
 @Injectable()
 export class DogService {
@@ -266,5 +267,26 @@ export class DogService {
     const userObject = this.userService.toObject(user as UserDocument);
 
     return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
+  }
+
+  async updateDogName({
+    name,
+    userId,
+    dogId,
+  }: UpdateDogNameDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: name && {
+          'dogs.$[dog].name': name,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
   }
 }
