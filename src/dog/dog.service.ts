@@ -17,7 +17,11 @@ import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-scree
 import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
 import { UserDocument, UserProfile } from '../user/entities/user.entity';
 import { DogProfile, RegistrationStatus } from './entities/dog.entity';
-import { UpdateDogNameDto } from './dto/update-dog/update-dog.dto';
+import {
+  UpdateDogNameDto,
+  UpdateDogSizeDto,
+  UpdateHeavyCoatDto,
+} from './dto/update-dog/update-dog.dto';
 
 @Injectable()
 export class DogService {
@@ -252,7 +256,7 @@ export class DogService {
       { _id: userId },
       {
         $push: { 'dogs.$[dog].screens': AvatarSelectionQuestionnaireScreen },
-        $set: selectedAvatar && {
+        $set: {
           'dogs.$[dog].avatar': selectedAvatar,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
           'dogs.$[dog].registrationStatus': RegistrationStatus.COMPLETED,
@@ -277,8 +281,50 @@ export class DogService {
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
-        $set: name && {
+        $set: {
           'dogs.$[dog].name': name,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateDogSize({
+    dogSize,
+    userId,
+    dogId,
+  }: UpdateDogSizeDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].dogSize': dogSize,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateHeavyCoat({
+    heavyCoat,
+    userId,
+    dogId,
+  }: UpdateHeavyCoatDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].heavyCoat': heavyCoat,
         },
       },
       {
