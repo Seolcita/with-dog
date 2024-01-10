@@ -25,6 +25,7 @@ import {
   UpdateLocationDto,
   UpdateSelectedAvatarDto,
 } from './dto/update-dog/update-dog.dto';
+import { DeleteDogDto } from './dto/delete-dog/delete-dog.dto';
 
 @Injectable()
 export class DogService {
@@ -389,6 +390,22 @@ export class DogService {
       {
         $set: {
           location,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async deleteDog({ dogId, userId }: DeleteDogDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $pull: {
+          dogs: { _id: dogId },
         },
       },
       {
