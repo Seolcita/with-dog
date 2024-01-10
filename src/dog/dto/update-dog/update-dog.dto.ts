@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
 import {
+  CreateColdAdaptDto,
   CreateDogNameDto,
   CreateDogSizeDto,
   CreateHeavyCoatDto,
@@ -16,7 +17,7 @@ export class UpdateDogSizeDto extends CreateDogSizeDto {}
 
 export class UpdateHeavyCoatDto extends CreateHeavyCoatDto {}
 
-export class UpdateColdAdaptDto extends CreateHeavyCoatDto {}
+export class UpdateColdAdaptDto extends CreateColdAdaptDto {}
 
 export class UpdateLocationDto extends CreateLocationDto {}
 

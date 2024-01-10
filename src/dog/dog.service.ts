@@ -18,9 +18,11 @@ import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaire
 import { UserDocument, UserProfile } from '../user/entities/user.entity';
 import { DogProfile, RegistrationStatus } from './entities/dog.entity';
 import {
+  UpdateColdAdaptDto,
   UpdateDogNameDto,
   UpdateDogSizeDto,
   UpdateHeavyCoatDto,
+  UpdateSelectedAvatarDto,
 } from './dto/update-dog/update-dog.dto';
 
 @Injectable()
@@ -325,6 +327,48 @@ export class DogService {
       {
         $set: {
           'dogs.$[dog].heavyCoat': heavyCoat,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateColdAdapt({
+    coldAdapt,
+    userId,
+    dogId,
+  }: UpdateColdAdaptDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].coldAdapt': coldAdapt,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateAvatarSelection({
+    selectedAvatar,
+    userId,
+    dogId,
+  }: UpdateSelectedAvatarDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].avatar': selectedAvatar,
         },
       },
       {

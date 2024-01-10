@@ -31,7 +31,7 @@ export class DogController {
   @Post('heavy-coat')
   async createHeavyCoat(@Req() request): Promise<DogProfile> {
     const { dogId, heavyCoat, userId } = request.body;
-    if (!dogId || !heavyCoat || !userId)
+    if (!dogId || heavyCoat === undefined || !userId)
       throw new Error('Missing dogId, heavyCoat, or userId');
 
     return this.dogService.createHeavyCoat({ dogId, heavyCoat, userId });
@@ -40,7 +40,7 @@ export class DogController {
   @Post('cold-adapt')
   async createColdAdapt(@Req() request): Promise<DogProfile> {
     const { dogId, coldAdapt, userId } = request.body;
-    if (!dogId || !coldAdapt || !userId)
+    if (!dogId || !coldAdapt === undefined || !userId)
       throw new Error('Missing dogId, coldAdapt, or userId');
 
     return this.dogService.createColdAdapt({ dogId, coldAdapt, userId });
@@ -93,5 +93,27 @@ export class DogController {
       throw new Error('Missing heavyCoat, userId, or dogId');
 
     return this.dogService.updateHeavyCoat({ heavyCoat, userId, dogId });
+  }
+
+  @Put('cold-adapt/edit')
+  async editColdAdapt(@Req() request): Promise<UserProfile> {
+    const { coldAdapt, userId, dogId } = request.body;
+    if (coldAdapt === undefined || !userId || !dogId)
+      throw new Error('Missing coldAdapt, userId, or dogId');
+
+    return this.dogService.updateColdAdapt({ coldAdapt, userId, dogId });
+  }
+
+  @Put('avatar-selection/edit')
+  async editAvatarSelection(@Req() request): Promise<UserProfile> {
+    const { selectedAvatar, userId, dogId } = request.body;
+    if (!selectedAvatar || !userId || !dogId)
+      throw new Error('Missing selectedAvatar, userId, or dogId');
+
+    return this.dogService.updateAvatarSelection({
+      selectedAvatar,
+      userId,
+      dogId,
+    });
   }
 }
