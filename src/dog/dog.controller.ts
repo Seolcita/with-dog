@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, Put, Req } from '@nestjs/common';
+import { Controller, Delete, Inject, Post, Put, Req } from '@nestjs/common';
 import { DogService } from './dog.service';
 import { DogProfile } from './entities/dog.entity';
 import { UserProfile } from '../user/entities/user.entity';
@@ -124,5 +124,13 @@ export class DogController {
       throw new Error('Missing dogId, location, or userId');
 
     return this.dogService.updateLocation({ location, userId });
+  }
+
+  @Delete('delete')
+  async deleteDog(@Req() request): Promise<UserProfile> {
+    const { dogId, userId } = request.body;
+    if (!dogId || !userId) throw new Error('Missing dogId,  or userId');
+
+    return this.dogService.deleteDog({ dogId, userId });
   }
 }
