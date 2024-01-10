@@ -15,8 +15,16 @@ import { Dog } from './schema/dog.schema';
 import { QuestionnaireScreenFields } from '../questionnaire/schema/questionnaire-screen-fields.schema';
 import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-screen.schema';
 import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
-import { UserDocument } from '../user/entities/user.entity';
+import { UserDocument, UserProfile } from '../user/entities/user.entity';
 import { DogProfile, RegistrationStatus } from './entities/dog.entity';
+import {
+  UpdateColdAdaptDto,
+  UpdateDogNameDto,
+  UpdateDogSizeDto,
+  UpdateHeavyCoatDto,
+  UpdateLocationDto,
+  UpdateSelectedAvatarDto,
+} from './dto/update-dog/update-dog.dto';
 
 @Injectable()
 export class DogService {
@@ -50,7 +58,6 @@ export class DogService {
         { new: true },
       );
     } catch (err) {
-      console.log(err);
       throw new NotFoundException(`User not found with id: ${userId}`);
     }
 
@@ -251,7 +258,7 @@ export class DogService {
       { _id: userId },
       {
         $push: { 'dogs.$[dog].screens': AvatarSelectionQuestionnaireScreen },
-        $set: selectedAvatar && {
+        $set: {
           'dogs.$[dog].avatar': selectedAvatar,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
           'dogs.$[dog].registrationStatus': RegistrationStatus.COMPLETED,
@@ -266,5 +273,129 @@ export class DogService {
     const userObject = this.userService.toObject(user as UserDocument);
 
     return (userObject.dogs as DogProfile[]).find((dog) => dog.id === dogId);
+  }
+
+  async updateDogName({
+    name,
+    userId,
+    dogId,
+  }: UpdateDogNameDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].name': name,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateDogSize({
+    dogSize,
+    userId,
+    dogId,
+  }: UpdateDogSizeDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].dogSize': dogSize,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateHeavyCoat({
+    heavyCoat,
+    userId,
+    dogId,
+  }: UpdateHeavyCoatDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].heavyCoat': heavyCoat,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateColdAdapt({
+    coldAdapt,
+    userId,
+    dogId,
+  }: UpdateColdAdaptDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].coldAdapt': coldAdapt,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateAvatarSelection({
+    selectedAvatar,
+    userId,
+    dogId,
+  }: UpdateSelectedAvatarDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          'dogs.$[dog].avatar': selectedAvatar,
+        },
+      },
+      {
+        new: true,
+        arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateLocation({
+    location,
+    userId,
+  }: UpdateLocationDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          location,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
   }
 }
