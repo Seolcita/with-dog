@@ -116,4 +116,13 @@ export class DogController {
       dogId,
     });
   }
+
+  @Put('location/edit')
+  async editLocation(@Req() request): Promise<UserProfile> {
+    const { location, userId } = request.body;
+    if (!location || !userId)
+      throw new Error('Missing dogId, location, or userId');
+
+    return this.dogService.updateLocation({ location, userId });
+  }
 }

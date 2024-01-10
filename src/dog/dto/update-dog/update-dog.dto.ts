@@ -4,7 +4,6 @@ import {
   CreateDogNameDto,
   CreateDogSizeDto,
   CreateHeavyCoatDto,
-  CreateLocationDto,
   CreateSelectedAvatarDto,
 } from '../create-dog/create-dog.dto';
 
@@ -19,6 +18,12 @@ export class UpdateHeavyCoatDto extends CreateHeavyCoatDto {}
 
 export class UpdateColdAdaptDto extends CreateColdAdaptDto {}
 
-export class UpdateLocationDto extends CreateLocationDto {}
+export class UpdateLocationDto {
+  @IsString()
+  readonly location: string;
+
+  @IsString()
+  readonly userId: string;
+}
 
 export class UpdateSelectedAvatarDto extends CreateSelectedAvatarDto {}

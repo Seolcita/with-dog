@@ -22,6 +22,7 @@ import {
   UpdateDogNameDto,
   UpdateDogSizeDto,
   UpdateHeavyCoatDto,
+  UpdateLocationDto,
   UpdateSelectedAvatarDto,
 } from './dto/update-dog/update-dog.dto';
 
@@ -57,7 +58,6 @@ export class DogService {
         { new: true },
       );
     } catch (err) {
-      console.log(err);
       throw new NotFoundException(`User not found with id: ${userId}`);
     }
 
@@ -374,6 +374,25 @@ export class DogService {
       {
         new: true,
         arrayFilters: [{ 'dog._id': dogId }],
+      },
+    );
+
+    return this.userService.toObject(user as UserDocument);
+  }
+
+  async updateLocation({
+    location,
+    userId,
+  }: UpdateLocationDto): Promise<UserProfile> {
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          location,
+        },
+      },
+      {
+        new: true,
       },
     );
 
