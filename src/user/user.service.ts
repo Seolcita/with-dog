@@ -63,6 +63,8 @@ export class UserService {
             coldAdapt: dog.coldAdapt,
             avatar: dog.avatar,
             registrationStatus: dog.registrationStatus,
+            completedStep: dog.completedStep,
+            totalSteps: dog.totalSteps,
             screens: dog.screens,
             nextScreen: dog.nextScreen,
           };

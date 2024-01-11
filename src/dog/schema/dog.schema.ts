@@ -21,9 +21,6 @@ export class Dog {
   @Prop({ enum: DogSize })
   dogSize: DogSize;
 
-  @Prop({ enum: RegistrationStatus, default: RegistrationStatus.NOT_STARTED })
-  registrationStatus: RegistrationStatus;
-
   @Prop()
   heavyCoat: boolean;
 
@@ -32,6 +29,15 @@ export class Dog {
 
   @Prop({ type: Object })
   avatar: Avatar;
+
+  @Prop({ enum: RegistrationStatus, default: RegistrationStatus.NOT_STARTED })
+  registrationStatus: RegistrationStatus;
+
+  @Prop()
+  completedStep: number;
+
+  @Prop()
+  totalSteps: number;
 
   @Prop({ enum: QuestionnaireScreenName })
   nextScreen: QuestionnaireScreenName;
