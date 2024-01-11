@@ -45,6 +45,8 @@ export class DogService {
       name,
       ownerId: userId,
       registrationStatus: RegistrationStatus.IN_PROGRESS,
+      completedStep: 1,
+      totalSteps: 6,
     });
 
     // Add new dog to user
@@ -116,6 +118,7 @@ export class DogService {
         $set: {
           'dogs.$[dog].dogSize': dogSize,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.HEAVY_COAT_SCREEN,
+          'dogs.$[dog].completedStep': 2,
         },
       },
       {
@@ -152,6 +155,7 @@ export class DogService {
         $set: {
           'dogs.$[dog].heavyCoat': heavyCoat,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+          'dogs.$[dog].completedStep': 3,
         },
       },
       {
@@ -188,6 +192,7 @@ export class DogService {
         $set: {
           'dogs.$[dog].coldAdapt': coldAdapt,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.LOCATION_SCREEN,
+          'dogs.$[dog].completedStep': 4,
         },
       },
       {
@@ -225,6 +230,7 @@ export class DogService {
           location,
           'dogs.$[dog].nextScreen':
             QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
+          'dogs.$[dog].completedStep': 5,
         },
       },
       {
@@ -262,6 +268,7 @@ export class DogService {
         $set: {
           'dogs.$[dog].avatar': selectedAvatar,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
+          'dogs.$[dog].completedStep': 6,
           'dogs.$[dog].registrationStatus': RegistrationStatus.COMPLETED,
         },
       },
