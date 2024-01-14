@@ -71,7 +71,7 @@ export class AuthController {
     const refreshToken = req.cookies['refresh_token'];
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
-    const isloggedout = await this.authService.revokeGoogleToken(refreshToken);
-    isloggedout.status === 200 && res.json({ status: isloggedout.status });
+    const isLogout = await this.authService.revokeGoogleToken(refreshToken);
+    isLogout.status === 200 && res.json({ status: isLogout.status });
   }
 }
