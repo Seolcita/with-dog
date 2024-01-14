@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<UserProfile> {
-    if (id === undefined) {
+    if (!id || typeof id !== 'string') {
       throw new Error('Invalid id');
     }
 
