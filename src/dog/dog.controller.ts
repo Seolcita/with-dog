@@ -40,7 +40,7 @@ export class DogController {
   @Post('cold-adapt')
   async createColdAdapt(@Req() request): Promise<DogProfile> {
     const { dogId, coldAdapt, userId } = request.body;
-    if (!dogId || !coldAdapt === undefined || !userId)
+    if (!dogId || coldAdapt === undefined || !userId)
       throw new Error('Missing dogId, coldAdapt, or userId');
 
     return this.dogService.createColdAdapt({ dogId, coldAdapt, userId });

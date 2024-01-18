@@ -47,6 +47,8 @@ export class AuthService {
 
       if (!expiresIn || expiresIn <= 0) {
         return true;
+      } else {
+        return false;
       }
     } catch (error) {
       return true;
@@ -71,6 +73,11 @@ export class AuthService {
 
   async getUserById(id: string) {
     const user = await this.userService.getUserById(id);
+    return user;
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.userService.getUserByEmail(email);
     return user;
   }
 }
