@@ -42,6 +42,15 @@ export class UserService {
     return this.toObject(user as UserDocument);
   }
 
+  async getUserByEmail(email: string): Promise<UserProfile> {
+    if (!email || typeof email !== 'string') {
+      throw new Error('Invalid email');
+    }
+
+    const user = await this.userModel.findOne({ email });
+    return this.toObject(user as UserDocument);
+  }
+
   public toObject(document: UserDocument): UserProfile {
     return {
       id: document._id.toString(),

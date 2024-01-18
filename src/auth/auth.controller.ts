@@ -72,6 +72,43 @@ export class AuthController {
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
     const isLogout = await this.authService.revokeGoogleToken(refreshToken);
-    isLogout.status === 200 && res.json({ status: isLogout.status });
+    isLogout.status === 200
+      ? res.json({ status: isLogout.status })
+      : res.json({ status: isLogout.data.error });
+  }
+
+  @Get('login-status')
+  async loginStatus(@Req() req, @Res() res: Response) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.json({ loggedIn: false });
+    }
+
+    try {
+      const isLogout = await this.authService.isTokenExpired(token);
+
+      if (isLogout) {
+        return res.json({ user: null, loggedIn: false });
+      } else {
+        const googleUserProfile =
+          await this.authService.getGoogleProfile(token);
+
+        const dbUserProfile = await this.authService.getUserByEmail(
+          googleUserProfile.data.email,
+        );
+
+        const user = {
+          ...dbUserProfile,
+          accessToken: token,
+          refreshToken: req.cookies['refresh_token'],
+        };
+
+        return res.json({ user, loggedIn: true });
+      }
+    } catch (error) {
+      return res.json({ loggedIn: false });
+    }
   }
 }
