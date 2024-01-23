@@ -5,6 +5,7 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,6 +31,23 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  await app.listen(process.env.PORT || 3001);
+
+  const PORT = process.env.PORT || 3001;
+  const connectDB = async () => {
+    try {
+      const conn = await mongoose.connect(process.env.MONGODB_URI);
+      console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+      console.log(error);
+      process.exit(1);
+    }
+  };
+
+  connectDB().then(() => {
+    console.log('PORT', PORT);
+    app.listen(PORT, () => {
+      console.log('listening for requests');
+    });
+  });
 }
 bootstrap();
