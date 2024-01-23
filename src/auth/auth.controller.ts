@@ -34,7 +34,7 @@ export class AuthController {
     response.cookie('access_token', googleToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true, // set to false for localhost, true for production
+      secure: true,
       domain: 'nice-blue-gosling-kit.cyclic.app',
       path: '/',
     });
@@ -42,12 +42,12 @@ export class AuthController {
     response.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true, // set to false for localhost, true for production
+      secure: true,
       domain: 'nice-blue-gosling-kit.cyclic.app',
       path: '/',
     });
 
-    response.redirect('http://localhost:3000/auth/signin-success');
+    response.redirect(process.env.REDIRECT_SIGNIN);
   }
 
   @UseGuards(CheckTokenExpiryGuard)
