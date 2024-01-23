@@ -34,12 +34,16 @@ export class AuthController {
     response.cookie('access_token', googleToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true,
+      secure: false, // set to false for localhost, true for production
+      domain: 'localhost',
+      path: '/',
     });
     response.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true,
+      secure: false, // set to false for localhost, true for production
+      domain: 'localhost',
+      path: '/',
     });
 
     response.redirect('http://localhost:3000/auth/signin-success');
