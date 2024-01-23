@@ -31,9 +31,15 @@ export class AuthController {
     const googleToken = request.user.accessToken;
     const googleRefreshToken = request.user.refreshToken;
 
-    response.cookie('access_token', googleToken, { httpOnly: true });
+    response.cookie('access_token', googleToken, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
     response.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     });
 
     response.redirect('http://localhost:3000/auth/signin-success');
