@@ -42,7 +42,7 @@ export class AuthService {
       const response = await axios.get(
         `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`,
       );
-
+      console.log('response', response.data.expires_in);
       const expiresIn = response.data.expires_in;
 
       if (!expiresIn || expiresIn <= 0) {
@@ -51,6 +51,7 @@ export class AuthService {
         return false;
       }
     } catch (error) {
+      console.error('Failed to check if token is expired:', error);
       return true;
     }
   }
