@@ -15,7 +15,7 @@ export class Dog {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   ownerId: User | Types.ObjectId;
 
-  @Prop({ unique: true, index: true })
+  @Prop()
   name: string;
 
   @Prop({ enum: DogSize })
