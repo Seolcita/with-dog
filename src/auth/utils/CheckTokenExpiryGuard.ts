@@ -16,10 +16,11 @@ export class CheckTokenExpiryGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const accessToken = request.cookies['access_token'];
+    console.log('ACCESSTOKEN🥎', accessToken);
 
     if (await this.authService.isTokenExpired(accessToken)) {
       const refreshToken = request.cookies['refresh_token'];
-
+      console.log('refreshToken', refreshToken);
       if (!refreshToken) {
         throw new UnauthorizedException('Refresh token not found');
       }
