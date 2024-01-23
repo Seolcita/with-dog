@@ -34,7 +34,7 @@ export class AuthController {
     response.cookie('access_token', googleToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: false, // set to false for localhost, true for production
+      secure: true, // set to false for localhost, true for production
       domain: 'nice-blue-gosling-kit.cyclic.app',
       path: '/',
     });
@@ -42,7 +42,7 @@ export class AuthController {
     response.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: false, // set to false for localhost, true for production
+      secure: true, // set to false for localhost, true for production
       domain: 'nice-blue-gosling-kit.cyclic.app',
       path: '/',
     });
