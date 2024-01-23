@@ -31,9 +31,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     done: any,
   ) {
     //TODO: Remove console.log after development
-    console.log(accessToken);
-    console.log(refreshToken);
-    console.log(profile);
+    console.log('accessToken 🎄🎄🎄🎄🎄🎄', accessToken);
+    console.log('refreshToken🤯🤯🤯🤯🤯🤯', refreshToken);
+    console.log('profile🐶🐶🐶🐶🐶🐶', profile);
     await this.authService.getOrCreateUser({
       email: profile.emails[0].value,
       firstName: profile.name.givenName,
