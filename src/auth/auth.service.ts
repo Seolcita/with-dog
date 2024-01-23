@@ -15,7 +15,7 @@ export class AuthService {
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`,
       );
     } catch (error) {
-      console.error('Failed to revoke the token:', error);
+      console.error('Failed to get google profile:', error);
     }
   }
 
