@@ -39,10 +39,18 @@ export class AuthService {
 
   async isTokenExpired(token: string): Promise<boolean> {
     try {
+      await axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`,
+        )
+        .then((res) => console.log('🚙🚙🚙🚙🚙🚙🚙🚙🚙🚙🚙', res?.data))
+        .catch((err) => console.log('🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯', err));
+
       const response = await axios.get(
         `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`,
       );
-      console.log('response', response.data.expires_in);
+
+      console.log('response🎄', response.data.expires_in);
       const expiresIn = response.data.expires_in;
 
       if (!expiresIn || expiresIn <= 0) {
