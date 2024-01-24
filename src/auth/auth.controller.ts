@@ -53,9 +53,6 @@ export class AuthController {
   }
 
   @UseGuards(CheckTokenExpiryGuard)
-  @UseInterceptors(
-    cors({ origin: 'https://chillydog.vercel.app', credentials: true }),
-  )
   @Get('profile')
   async getUserProfile(@Request() req) {
     const accessToken = req.cookies['access_token'];
