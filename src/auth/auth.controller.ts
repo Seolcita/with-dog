@@ -25,7 +25,7 @@ export class AuthController {
     return { msg: 'Google Authentication' };
   }
 
-  @Get('google/redirect')
+  @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(@Req() request, @Res() response: Response) {
     const googleToken = request.user.accessToken;
@@ -35,7 +35,6 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: 'nice-blue-gosling-kit.cyclic.app',
       path: '/',
     });
 
@@ -43,17 +42,17 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      domain: 'nice-blue-gosling-kit.cyclic.app',
       path: '/',
     });
 
-    response.redirect(process.env.REDIRECT_SIGNIN);
+    response.redirect(process.env.REDIRECT_SIGNIN_SUCCESS_URL);
   }
 
   @UseGuards(CheckTokenExpiryGuard)
   @Get('profile')
   async getUserProfile(@Request() req) {
     const accessToken = req.cookies['access_token'];
+    console.log('accessToken👀', accessToken);
     if (accessToken) {
       const googleUserProfile =
         await this.authService.getGoogleProfile(accessToken);
