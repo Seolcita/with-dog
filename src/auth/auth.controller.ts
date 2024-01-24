@@ -8,11 +8,13 @@ import {
   Res,
   UnauthorizedException,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import cors from 'cors';
 
+import { CheckTokenExpiryGuard } from './utils/CheckTokenExpiryGuard';
 import { GoogleAuthGuard } from './utils/Guards';
 import { AuthService } from './auth.service';
-import { CheckTokenExpiryGuard } from './utils/CheckTokenExpiryGuard';
 
 @Controller('auth')
 export class AuthController {
@@ -36,6 +38,7 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
       path: '/',
+      domain: 'chillydog.vercel.app',
     });
 
     response.cookie('refresh_token', googleRefreshToken, {
@@ -43,12 +46,16 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
       path: '/',
+      domain: 'chillydog.vercel.app',
     });
 
     response.redirect(process.env.REDIRECT_SIGNIN_SUCCESS_URL);
   }
 
   @UseGuards(CheckTokenExpiryGuard)
+  @UseInterceptors(
+    cors({ origin: 'https://chillydog.vercel.app', credentials: true }),
+  )
   @Get('profile')
   async getUserProfile(@Request() req) {
     const accessToken = req.cookies['access_token'];
