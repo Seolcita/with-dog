@@ -59,6 +59,7 @@ export class UserService {
       lastName: document.lastName,
       photoUrl: document.photoUrl,
       location: document.location,
+      accessToken: document.accessToken,
       dogs:
         document.dogs &&
         document.dogs.length > 0 &&

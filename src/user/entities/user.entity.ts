@@ -8,6 +8,7 @@ export interface UserProfile {
   lastName: string;
   photoUrl: string;
   location: string;
+  accessToken: string;
   dogs: DogProfile[] | [];
 }
 
