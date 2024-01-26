@@ -1,7 +1,8 @@
 import { Controller, Delete, Inject, Post, Put, Req } from '@nestjs/common';
-import { DogService } from './dog.service';
-import { DogProfile } from './entities/dog.entity';
+
 import { UserProfile } from '../user/entities/user.entity';
+import { DogProfile } from './entities/dog.entity';
+import { DogService } from './dog.service';
 
 @Controller('dog')
 export class DogController {
@@ -12,16 +13,16 @@ export class DogController {
 
   //TODO: Remove console logs
   @Post('name')
-  async createDogName(@Req() request): Promise<DogProfile> {
-    const { name, userId } = request.body;
+  async createDogName(@Req() req): Promise<DogProfile> {
+    const { name, userId } = req.body;
     if (!name || !userId) throw new Error('Missing name or userId');
 
     return this.dogService.createDogName({ name, userId });
   }
 
   @Post('dog-size')
-  async createDogSize(@Req() request): Promise<DogProfile> {
-    const { dogId, dogSize, userId } = request.body;
+  async createDogSize(@Req() req): Promise<DogProfile> {
+    const { dogId, dogSize, userId } = req.body;
     if (!dogId || !dogSize || !userId)
       throw new Error('Missing dogId, dogSize, or userId');
 
@@ -29,8 +30,8 @@ export class DogController {
   }
 
   @Post('heavy-coat')
-  async createHeavyCoat(@Req() request): Promise<DogProfile> {
-    const { dogId, heavyCoat, userId } = request.body;
+  async createHeavyCoat(@Req() req): Promise<DogProfile> {
+    const { dogId, heavyCoat, userId } = req.body;
     if (!dogId || heavyCoat === undefined || !userId)
       throw new Error('Missing dogId, heavyCoat, or userId');
 
@@ -38,8 +39,8 @@ export class DogController {
   }
 
   @Post('cold-adapt')
-  async createColdAdapt(@Req() request): Promise<DogProfile> {
-    const { dogId, coldAdapt, userId } = request.body;
+  async createColdAdapt(@Req() req): Promise<DogProfile> {
+    const { dogId, coldAdapt, userId } = req.body;
     if (!dogId || coldAdapt === undefined || !userId)
       throw new Error('Missing dogId, coldAdapt, or userId');
 
@@ -47,8 +48,8 @@ export class DogController {
   }
 
   @Post('location')
-  async createLocation(@Req() request): Promise<DogProfile> {
-    const { dogId, location, userId } = request.body;
+  async createLocation(@Req() req): Promise<DogProfile> {
+    const { dogId, location, userId } = req.body;
     if (!dogId || !location || !userId)
       throw new Error('Missing dogId, location, or userId');
 
@@ -56,8 +57,8 @@ export class DogController {
   }
 
   @Post('avatar-selection')
-  async createAvatarSelection(@Req() request): Promise<DogProfile> {
-    const { dogId, selectedAvatar, userId } = request.body;
+  async createAvatarSelection(@Req() req): Promise<DogProfile> {
+    const { dogId, selectedAvatar, userId } = req.body;
     if (!dogId || !selectedAvatar || !userId)
       throw new Error('Missing dogId, selectedAvatar, or userId');
 
@@ -69,8 +70,8 @@ export class DogController {
   }
 
   @Put('name/edit')
-  async editDogName(@Req() request): Promise<UserProfile> {
-    const { name, userId, dogId } = request.body;
+  async editDogName(@Req() req): Promise<UserProfile> {
+    const { name, userId, dogId } = req.body;
     if (!name || !userId || !dogId)
       throw new Error('Missing name, userId, or dogId');
 
@@ -78,8 +79,8 @@ export class DogController {
   }
 
   @Put('dog-size/edit')
-  async editDogSize(@Req() request): Promise<UserProfile> {
-    const { dogSize, userId, dogId } = request.body;
+  async editDogSize(@Req() req): Promise<UserProfile> {
+    const { dogSize, userId, dogId } = req.body;
     if (!dogSize || !userId || !dogId)
       throw new Error('Missing dogSize, userId, or dogId');
 
@@ -87,8 +88,8 @@ export class DogController {
   }
 
   @Put('heavy-coat/edit')
-  async editHeavyCoat(@Req() request): Promise<UserProfile> {
-    const { heavyCoat, userId, dogId } = request.body;
+  async editHeavyCoat(@Req() req): Promise<UserProfile> {
+    const { heavyCoat, userId, dogId } = req.body;
     if (heavyCoat === undefined || !userId || !dogId)
       throw new Error('Missing heavyCoat, userId, or dogId');
 
@@ -96,8 +97,8 @@ export class DogController {
   }
 
   @Put('cold-adapt/edit')
-  async editColdAdapt(@Req() request): Promise<UserProfile> {
-    const { coldAdapt, userId, dogId } = request.body;
+  async editColdAdapt(@Req() req): Promise<UserProfile> {
+    const { coldAdapt, userId, dogId } = req.body;
     if (coldAdapt === undefined || !userId || !dogId)
       throw new Error('Missing coldAdapt, userId, or dogId');
 
@@ -105,8 +106,8 @@ export class DogController {
   }
 
   @Put('avatar-selection/edit')
-  async editAvatarSelection(@Req() request): Promise<UserProfile> {
-    const { selectedAvatar, userId, dogId } = request.body;
+  async editAvatarSelection(@Req() req): Promise<UserProfile> {
+    const { selectedAvatar, userId, dogId } = req.body;
     if (!selectedAvatar || !userId || !dogId)
       throw new Error('Missing selectedAvatar, userId, or dogId');
 
@@ -118,8 +119,8 @@ export class DogController {
   }
 
   @Put('location/edit')
-  async editLocation(@Req() request): Promise<UserProfile> {
-    const { location, userId } = request.body;
+  async editLocation(@Req() req): Promise<UserProfile> {
+    const { location, userId } = req.body;
     if (!location || !userId)
       throw new Error('Missing dogId, location, or userId');
 
@@ -127,8 +128,8 @@ export class DogController {
   }
 
   @Delete('delete')
-  async deleteDog(@Req() request): Promise<UserProfile> {
-    const { dogId, userId } = request.body;
+  async deleteDog(@Req() req): Promise<UserProfile> {
+    const { dogId, userId } = req.body;
     if (!dogId || !userId) throw new Error('Missing dogId,  or userId');
 
     return this.dogService.deleteDog({ dogId, userId });
