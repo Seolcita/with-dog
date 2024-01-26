@@ -3,16 +3,14 @@ import {
   Controller,
   Get,
   Inject,
+  Post,
   Req,
-  Request,
   Res,
   UnauthorizedException,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import cors from 'cors';
 
-import { CheckTokenExpiryGuard } from './utils/CheckTokenExpiryGuard';
+import { GoogleToken } from './utils/GoogleToken';
 import { GoogleAuthGuard } from './utils/Guards';
 import { AuthService } from './auth.service';
 
@@ -20,6 +18,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(
     @Inject('AUTH_SERVICE') private readonly authService: AuthService,
+    @Inject('GOOGLE_TOKEN') private readonly googleToken: GoogleToken,
   ) {}
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
@@ -29,34 +28,33 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Req() request, @Res() response: Response) {
-    const googleToken = request.user.accessToken;
-    const googleRefreshToken = request.user.refreshToken;
+  async handleRedirect(@Req() req, @Res() res: Response) {
+    const googleToken = req.user.accessToken;
 
-    response.cookie('access_token', googleToken, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      path: '/',
-      domain: 'chillydog.vercel.app',
+    this.googleToken.setGoogleToken({
+      accessToken: googleToken,
     });
 
-    response.cookie('refresh_token', googleRefreshToken, {
+    res.cookie('access_token', googleToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true,
+      secure: false,
       path: '/',
-      domain: 'chillydog.vercel.app',
     });
 
-    response.redirect(process.env.REDIRECT_SIGNIN_SUCCESS_URL);
+    res.redirect(process.env.REDIRECT_SIGNIN_SUCCESS_URL);
   }
 
-  @UseGuards(CheckTokenExpiryGuard)
-  @Get('profile')
-  async getUserProfile(@Request() req) {
-    const accessToken = req.cookies['access_token'];
-    console.log('accessToken👀', accessToken);
+  @Get('token')
+  async getToken(@Res() res: Response) {
+    const token = this.googleToken.getGoogleToken();
+    res.status(200).json({ token });
+  }
+
+  @Post('profile')
+  async getUserProfile(@Req() req) {
+    const accessToken = req.body.accessToken;
+
     if (accessToken) {
       const googleUserProfile =
         await this.authService.getGoogleProfile(accessToken);
@@ -70,8 +68,7 @@ export class AuthController {
 
       const user = {
         ...dbUserProfile,
-        accessToken,
-        refreshToken: req.cookies['refresh_token'],
+        accessToken: googleUserProfile.data.access_token,
       };
 
       return user;
@@ -80,15 +77,11 @@ export class AuthController {
     }
   }
 
-  @Get('logout')
-  async logout(@Req() req, @Res() res: Response) {
-    const refreshToken = req.cookies['refresh_token'];
+  @Post('logout')
+  async logout(@Res() res: Response) {
     res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-    const isLogout = await this.authService.revokeGoogleToken(refreshToken);
-    isLogout.status === 200
-      ? res.json({ status: isLogout.status })
-      : res.json({ status: isLogout.data.error });
+
+    res.json({ LoggedOut: true });
   }
 
   @Get('login-status')
@@ -115,8 +108,6 @@ export class AuthController {
 
         const user = {
           ...dbUserProfile,
-          accessToken: token,
-          refreshToken: req.cookies['refresh_token'],
         };
 
         return res.json({ user, loggedIn: true });

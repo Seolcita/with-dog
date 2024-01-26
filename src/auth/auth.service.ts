@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import axios from 'axios';
 
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserProfile } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
-import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -19,38 +19,12 @@ export class AuthService {
     }
   }
 
-  async getNewAccessToken(refreshToken: string): Promise<string> {
-    try {
-      const response = await axios.post(
-        'https://accounts.google.com/o/oauth2/token',
-        {
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          refresh_token: refreshToken,
-          grant_type: 'refresh_token',
-        },
-      );
-
-      return response.data.access_token;
-    } catch (error) {
-      throw new Error('Failed to refresh the access token.');
-    }
-  }
-
   async isTokenExpired(token: string): Promise<boolean> {
     try {
-      await axios
-        .get(
-          `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`,
-        )
-        .then((res) => console.log('🚙🚙🚙🚙🚙🚙🚙🚙🚙🚙🚙', res?.data))
-        .catch((err) => console.log('🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯🤯', err));
-
       const response = await axios.get(
         `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`,
       );
 
-      console.log('response🎄', response.data.expires_in);
       const expiresIn = response.data.expires_in;
 
       if (!expiresIn || expiresIn <= 0) {
@@ -61,18 +35,6 @@ export class AuthService {
     } catch (error) {
       console.error('Failed to check if token is expired:', error);
       return true;
-    }
-  }
-
-  async revokeGoogleToken(token: string) {
-    try {
-      const logoutData = await axios.get(
-        `https://accounts.google.com/o/oauth2/revoke?token=${token}`,
-      );
-
-      return logoutData;
-    } catch (error) {
-      console.error('Failed to revoke the token:', error);
     }
   }
 
