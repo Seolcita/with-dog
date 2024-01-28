@@ -7,9 +7,11 @@ import mongoose from 'mongoose';
 import * as cors from 'cors';
 
 import { AppModule } from './app.module';
+import { UnauthorizedExceptionFilter } from './auth/utils/UnauthorizedExceptionFilter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalFilters(new UnauthorizedExceptionFilter());
   app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
   app.use(cookieParser());
   app.use(
