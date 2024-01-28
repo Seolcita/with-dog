@@ -68,7 +68,7 @@ export class AuthController {
 
       const user = {
         ...dbUserProfile,
-        accessToken: googleUserProfile.data.access_token,
+        accessToken,
       };
 
       return user;
