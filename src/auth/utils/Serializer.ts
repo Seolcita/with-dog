@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { User } from '../../user/schemas/user.schema';
+
 import { AuthService } from '../auth.service';
+import { User } from '../../user/schemas/user.schema';
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
@@ -13,13 +14,11 @@ export class SessionSerializer extends PassportSerializer {
   }
 
   serializeUser(user: User, done: Function) {
-    console.log('Serializer User');
     done(null, user);
   }
 
   async deserializeUser(payload: any, done: Function) {
     const user = payload.id && (await this.authService.getUserById(payload.id));
-    console.log('Deserialize User');
     return user ? done(null, user) : done(null, null);
   }
 }

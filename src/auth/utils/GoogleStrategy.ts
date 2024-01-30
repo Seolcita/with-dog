@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
+
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -16,7 +17,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // to get refresh token
   authorizationParams(): { [key: string]: string } {
     return {
       access_type: 'offline',
@@ -30,17 +30,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     profile: Profile,
     done: any,
   ) {
-    //TODO: Remove console.log after development
-    console.log('accessToken 🎄🎄🎄🎄🎄🎄', accessToken);
-    console.log('refreshToken🤯🤯🤯🤯🤯🤯', refreshToken);
-    console.log('profile🐶🐶🐶🐶🐶🐶', profile);
     await this.authService.getOrCreateUser({
       email: profile.emails[0].value,
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       photoUrl: profile.photos[0].value,
     });
-    console.log('Validate');
 
     const user = {
       email: profile.emails[0].value,

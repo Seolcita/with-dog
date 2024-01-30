@@ -1,14 +1,15 @@
+import * as dotenv from 'dotenv';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import * as dotenv from 'dotenv';
 
+import { DogService } from '../dog/dog.service';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
-import { UserSchema } from '../user/schemas/user.schema';
-import { DogService } from '../dog/dog.service';
 import { DogSchema } from '../dog/schema/dog.schema';
+import { UserSchema } from '../user/schemas/user.schema';
 import { QuestionnaireScreenSchema } from '../questionnaire/schema/questionnaire-screen.schema';
 import { QuestionnaireScreenFieldsSchema } from '../questionnaire/schema/questionnaire-screen-fields.schema';
+
 dotenv.config();
 
 @Module({

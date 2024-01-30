@@ -1,4 +1,5 @@
 import { Document, Types } from 'mongoose';
+
 import { DogDocument, DogProfile } from '../../dog/entities/dog.entity';
 
 export interface UserProfile {
