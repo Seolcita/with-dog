@@ -1,5 +1,7 @@
+import mongoose from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+
 import {
   CreateColdAdaptDto,
   CreateDogNameDto,
@@ -8,15 +10,6 @@ import {
   CreateLocationDto,
   CreateSelectedAvatarDto,
 } from './dto/create-dog/create-dog.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../user/schemas/user.schema';
-import mongoose from 'mongoose';
-import { Dog } from './schema/dog.schema';
-import { QuestionnaireScreenFields } from '../questionnaire/schema/questionnaire-screen-fields.schema';
-import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-screen.schema';
-import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
-import { UserDocument, UserProfile } from '../user/entities/user.entity';
-import { DogProfile, RegistrationStatus } from './entities/dog.entity';
 import {
   UpdateColdAdaptDto,
   UpdateDogNameDto,
@@ -25,7 +18,14 @@ import {
   UpdateLocationDto,
   UpdateSelectedAvatarDto,
 } from './dto/update-dog/update-dog.dto';
+import { Dog } from './schema/dog.schema';
+import { UserService } from '../user/user.service';
+import { User } from '../user/schemas/user.schema';
 import { DeleteDogDto } from './dto/delete-dog/delete-dog.dto';
+import { UserDocument, UserProfile } from '../user/entities/user.entity';
+import { DogProfile, RegistrationStatus } from './entities/dog.entity';
+import { QuestionnaireScreen } from '../questionnaire/schema/questionnaire-screen.schema';
+import { QuestionnaireScreenName } from '../questionnaire/entities/questionnaireScreen-fields.entity';
 
 @Injectable()
 export class DogService {
@@ -34,8 +34,6 @@ export class DogService {
     @InjectModel(Dog.name) private dogModel: mongoose.Model<Dog>,
     @InjectModel(QuestionnaireScreen.name)
     private questionnaireScreenModel: mongoose.Model<QuestionnaireScreen>,
-    @InjectModel(QuestionnaireScreenFields.name)
-    private questionnaireScreenModelFields: mongoose.Model<QuestionnaireScreen>,
     @Inject('USER_SERVICE') private userService: UserService,
   ) {}
 

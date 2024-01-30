@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { Injectable } from '@nestjs/common';
+
 import { WeatherData } from './entities/weather.entities';
 
 @Injectable()

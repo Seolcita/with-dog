@@ -1,11 +1,12 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { User } from '../../user/schemas/user.schema';
-import { Avatar, DogSize, RegistrationStatus } from '../entities/dog.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
 import {
   QuestionnaireScreen,
   QuestionnaireScreenSchema,
 } from '../../questionnaire/schema/questionnaire-screen.schema';
+import { User } from '../../user/schemas/user.schema';
+import { Avatar, DogSize, RegistrationStatus } from '../entities/dog.entity';
 import { QuestionnaireScreenName } from '../../questionnaire/entities/questionnaireScreen-fields.entity';
 
 @Schema({

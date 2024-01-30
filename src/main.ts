@@ -44,7 +44,6 @@ async function bootstrap() {
   };
 
   connectDB().then(() => {
-    console.log('PORT', PORT);
     app.listen(PORT, () => {
       console.log('listening for requests');
     });

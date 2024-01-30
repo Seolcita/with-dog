@@ -1,4 +1,5 @@
 import { IsObject, IsString } from 'class-validator';
+
 import { Avatar, DogSize } from '../../entities/dog.entity';
 
 export class CreateDogNameDto {
