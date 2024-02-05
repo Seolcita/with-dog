@@ -52,7 +52,7 @@ export class DogService {
   }
 
   async createDogName({ name, userId }: CreateDogNameDto): Promise<DogProfile> {
-    // Create new questionnaire name screen
+    // Create questionnaire name screen
     const nameQuestionnaireScreen = new this.questionnaireScreenModel({
       nameScreen: {
         step: 1,
@@ -62,7 +62,7 @@ export class DogService {
       },
     });
 
-    // Create new dog with name
+    // Create dog with name
     const newDog = new this.dogModel({
       name,
       ownerId: userId,
@@ -102,7 +102,7 @@ export class DogService {
     dogSize,
     userId,
   }: CreateDogSizeDto): Promise<DogProfile> {
-    // Create new questionnaire dog size screen
+    // Create questionnaire dog size screen
     const dogSizeQuestionnaireScreen = new this.questionnaireScreenModel({
       dogSizeScreen: {
         step: 2,
@@ -152,7 +152,7 @@ export class DogService {
     heavyCoat,
     userId,
   }: CreateHeavyCoatDto): Promise<DogProfile> {
-    // Create new questionnaire heavy coat screen
+    // Create questionnaire heavy coat screen
     const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
       heavyCoatScreen: {
         step: 3,
@@ -202,12 +202,25 @@ export class DogService {
     coldAdapt,
     userId,
   }: CreateColdAdaptDto): Promise<DogProfile> {
-    // Create new questionnaire cold adapt screen
+    // Create questionnaire cold adapt screen
     const coldAdaptQuestionnaireScreen = new this.questionnaireScreenModel({
       coldAdaptScreen: {
         step: 4,
         previousScreen: QuestionnaireScreenName.HEAVY_COAT_SCREEN,
         nextScreen: QuestionnaireScreenName.LOCATION_SCREEN,
+        isCompleted: true,
+      },
+    });
+
+    // Check if user has location
+    const userData = await this.userModel.findOne({ _id: userId });
+
+    //Create questionnaire location screen
+    const locationQuestionnaireScreen = new this.questionnaireScreenModel({
+      locationScreen: {
+        step: 5,
+        previousScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+        nextScreen: QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
         isCompleted: true,
       },
     });
@@ -218,22 +231,45 @@ export class DogService {
       {
         $set: {
           coldAdapt,
-          nextScreen: QuestionnaireScreenName.LOCATION_SCREEN,
-          completedStep: 4,
+          nextScreen: userData.location
+            ? QuestionnaireScreenName.AVATAR_SELECTION_SCREEN
+            : QuestionnaireScreenName.LOCATION_SCREEN,
+          completedStep: userData.location ? 5 : 4,
         },
-        $push: { screens: coldAdaptQuestionnaireScreen },
+        $push: {
+          screens: userData.location
+            ? {
+                $each: [
+                  coldAdaptQuestionnaireScreen,
+                  locationQuestionnaireScreen,
+                ],
+              }
+            : { $each: [coldAdaptQuestionnaireScreen] },
+        },
       },
     );
 
     // Add questionnaire coldAdapt screen and coldAdapt data to dog which matches with dog id
+    // If user has location, add location as well and set next screen as avatar selection screen - skip location screen in frontend
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
-        $push: { 'dogs.$[dog].screens': coldAdaptQuestionnaireScreen },
+        $push: {
+          'dogs.$[dog].screens': userData.location
+            ? {
+                $each: [
+                  coldAdaptQuestionnaireScreen,
+                  locationQuestionnaireScreen,
+                ],
+              }
+            : { $each: [coldAdaptQuestionnaireScreen] },
+        },
         $set: {
           'dogs.$[dog].coldAdapt': coldAdapt,
-          'dogs.$[dog].nextScreen': QuestionnaireScreenName.LOCATION_SCREEN,
-          'dogs.$[dog].completedStep': 4,
+          'dogs.$[dog].nextScreen': userData.location
+            ? QuestionnaireScreenName.AVATAR_SELECTION_SCREEN
+            : QuestionnaireScreenName.LOCATION_SCREEN,
+          'dogs.$[dog].completedStep': userData.location ? 5 : 4,
         },
       },
       {
@@ -252,7 +288,7 @@ export class DogService {
     location,
     userId,
   }: CreateLocationDto): Promise<DogProfile> {
-    // Create new questionnaire location screen
+    // Create questionnaire location screen
     const locationQuestionnaireScreen = new this.questionnaireScreenModel({
       locationScreen: {
         step: 5,
@@ -303,7 +339,7 @@ export class DogService {
     selectedAvatar,
     userId,
   }: CreateSelectedAvatarDto): Promise<DogProfile> {
-    // Create new questionnaire avatar selection screen
+    // Create questionnaire avatar selection screen
     const avatarSelectionQuestionnaireScreen =
       new this.questionnaireScreenModel({
         avatarSelectionScreen: {
