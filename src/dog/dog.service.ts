@@ -45,7 +45,6 @@ export class DogService {
   async getDogOwnerIdByDogId(dogId: string): Promise<string> {
     const dog = await this.dogModel.findById({ _id: dogId });
 
-    console.log('dog🐶', dog);
     if (!dog) {
       throw new NotFoundException(`Dog not found with id: ${dogId}`);
     }
@@ -113,7 +112,7 @@ export class DogService {
       },
     });
 
-    // update the dog size to dog which matches with dog id
+    // Add the dog size to dog which matches with dog id
     await this.dogModel.findOneAndUpdate(
       { _id: dogId },
       {
@@ -163,7 +162,7 @@ export class DogService {
       },
     });
 
-    // update the heavyCoat to dog which matches with dog id
+    // Add the heavyCoat to dog which matches with dog id
     await this.dogModel.findOneAndUpdate(
       { _id: dogId },
       {
@@ -213,7 +212,7 @@ export class DogService {
       },
     });
 
-    // update the coldAdapt to dog which matches with dog id
+    // Add the coldAdapt to dog which matches with dog id
     await this.dogModel.findOneAndUpdate(
       { _id: dogId },
       {
