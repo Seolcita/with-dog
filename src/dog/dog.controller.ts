@@ -26,6 +26,12 @@ export class DogController {
     if (!dogId || !dogSize || !userId)
       throw new Error('Missing dogId, dogSize, or userId');
 
+    console.log('dogId🐶', dogId);
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    console.log('dogOwnerId🐶', dogOwnerId);
+
+    if (dogOwnerId !== userId) throw new Error('Unauthorized');
+
     return this.dogService.createDogSize({ dogId, dogSize, userId });
   }
 

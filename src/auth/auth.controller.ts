@@ -88,7 +88,6 @@ export class AuthController {
   async loginStatus(@Req() req, @Res() res: Response) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-
     if (!token) {
       return res.json({ loggedIn: false });
     }
@@ -101,6 +100,10 @@ export class AuthController {
       } else {
         const googleUserProfile =
           await this.authService.getGoogleProfile(token);
+
+        if (req.query.email !== googleUserProfile.data.email) {
+          return res.status(403).json({ message: 'Unauthorized' });
+        }
 
         const dbUserProfile = await this.authService.getUserByEmail(
           googleUserProfile.data.email,
