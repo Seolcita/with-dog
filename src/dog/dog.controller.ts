@@ -1,4 +1,13 @@
-import { Controller, Delete, Inject, Post, Put, Req } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Post,
+  Put,
+  Req,
+} from '@nestjs/common';
 
 import { UserProfile } from '../user/entities/user.entity';
 import { DogProfile } from './entities/dog.entity';
@@ -26,6 +35,11 @@ export class DogController {
     if (!dogId || !dogSize || !userId)
       throw new Error('Missing dogId, dogSize, or userId');
 
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     return this.dogService.createDogSize({ dogId, dogSize, userId });
   }
 
@@ -34,6 +48,11 @@ export class DogController {
     const { dogId, heavyCoat, userId } = req.body;
     if (!dogId || heavyCoat === undefined || !userId)
       throw new Error('Missing dogId, heavyCoat, or userId');
+
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return this.dogService.createHeavyCoat({ dogId, heavyCoat, userId });
   }
@@ -44,6 +63,11 @@ export class DogController {
     if (!dogId || coldAdapt === undefined || !userId)
       throw new Error('Missing dogId, coldAdapt, or userId');
 
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     return this.dogService.createColdAdapt({ dogId, coldAdapt, userId });
   }
 
@@ -53,6 +77,11 @@ export class DogController {
     if (!dogId || !location || !userId)
       throw new Error('Missing dogId, location, or userId');
 
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     return this.dogService.createLocation({ dogId, location, userId });
   }
 
@@ -61,6 +90,11 @@ export class DogController {
     const { dogId, selectedAvatar, userId } = req.body;
     if (!dogId || !selectedAvatar || !userId)
       throw new Error('Missing dogId, selectedAvatar, or userId');
+
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return this.dogService.createAvatarSelection({
       dogId,
@@ -75,6 +109,11 @@ export class DogController {
     if (!name || !userId || !dogId)
       throw new Error('Missing name, userId, or dogId');
 
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     return this.dogService.updateDogName({ name, userId, dogId });
   }
 
@@ -83,6 +122,11 @@ export class DogController {
     const { dogSize, userId, dogId } = req.body;
     if (!dogSize || !userId || !dogId)
       throw new Error('Missing dogSize, userId, or dogId');
+
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return this.dogService.updateDogSize({ dogSize, userId, dogId });
   }
@@ -93,6 +137,11 @@ export class DogController {
     if (heavyCoat === undefined || !userId || !dogId)
       throw new Error('Missing heavyCoat, userId, or dogId');
 
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     return this.dogService.updateHeavyCoat({ heavyCoat, userId, dogId });
   }
 
@@ -102,6 +151,11 @@ export class DogController {
     if (coldAdapt === undefined || !userId || !dogId)
       throw new Error('Missing coldAdapt, userId, or dogId');
 
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     return this.dogService.updateColdAdapt({ coldAdapt, userId, dogId });
   }
 
@@ -110,6 +164,11 @@ export class DogController {
     const { selectedAvatar, userId, dogId } = req.body;
     if (!selectedAvatar || !userId || !dogId)
       throw new Error('Missing selectedAvatar, userId, or dogId');
+
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return this.dogService.updateAvatarSelection({
       selectedAvatar,
@@ -131,6 +190,11 @@ export class DogController {
   async deleteDog(@Req() req): Promise<UserProfile> {
     const { dogId, userId } = req.body;
     if (!dogId || !userId) throw new Error('Missing dogId,  or userId');
+
+    const dogOwnerId = await this.dogService.getDogOwnerIdByDogId(dogId);
+    if (dogOwnerId !== userId) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return this.dogService.deleteDog({ dogId, userId });
   }

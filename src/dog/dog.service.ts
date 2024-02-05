@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import {
   CreateColdAdaptDto,
@@ -37,31 +42,16 @@ export class DogService {
     @Inject('USER_SERVICE') private userService: UserService,
   ) {}
 
-  async createDogName({ name, userId }: CreateDogNameDto): Promise<DogProfile> {
-    // Create new dog with name
-    const newDog = new this.dogModel({
-      name,
-      ownerId: userId,
-      registrationStatus: RegistrationStatus.IN_PROGRESS,
-      completedStep: 1,
-      totalSteps: 6,
-    });
+  async getDogOwnerIdByDogId(dogId: string): Promise<string> {
+    const dog = await this.dogModel.findById({ _id: dogId });
 
-    // Add new dog to user
-    try {
-      await this.userModel.findOneAndUpdate(
-        {
-          _id: userId,
-        },
-        {
-          $push: { dogs: newDog },
-        },
-        { new: true },
-      );
-    } catch (err) {
-      throw new NotFoundException(`User not found with id: ${userId}`);
+    if (!dog) {
+      throw new NotFoundException(`Dog not found with id: ${dogId}`);
     }
+    return dog.ownerId.toString();
+  }
 
+  async createDogName({ name, userId }: CreateDogNameDto): Promise<DogProfile> {
     // Create new questionnaire name screen
     const nameQuestionnaireScreen = new this.questionnaireScreenModel({
       nameScreen: {
@@ -72,19 +62,33 @@ export class DogService {
       },
     });
 
-    // Add questionnaire name screen to dog which matches with new dog id
+    // Create new dog with name
+    const newDog = new this.dogModel({
+      name,
+      ownerId: userId,
+      registrationStatus: RegistrationStatus.IN_PROGRESS,
+      completedStep: 1,
+      totalSteps: 6,
+      screens: [nameQuestionnaireScreen],
+      nextScreen: QuestionnaireScreenName.DOG_SIZE_SCREEN,
+    });
+
+    // Save new dog to dogModel
+    try {
+      await newDog.save();
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to save dog');
+    }
+
+    // Add new dog to user
     const user = await this.userModel.findOneAndUpdate(
-      { _id: userId },
       {
-        $push: { 'dogs.$[dog].screens': nameQuestionnaireScreen },
-        $set: {
-          'dogs.$[dog].nextScreen': QuestionnaireScreenName.DOG_SIZE_SCREEN,
-        },
+        _id: userId,
       },
       {
-        new: true,
-        arrayFilters: [{ 'dog._id': newDog._id }],
+        $push: { dogs: newDog },
       },
+      { new: true },
     );
 
     const userObject = this.userService.toObject(user as UserDocument);
@@ -107,6 +111,19 @@ export class DogService {
         isCompleted: true,
       },
     });
+
+    // Add the dog size to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          dogSize,
+          nextScreen: QuestionnaireScreenName.HEAVY_COAT_SCREEN,
+          completedStep: 2,
+        },
+        $push: { screens: dogSizeQuestionnaireScreen },
+      },
+    );
 
     // Add questionnaire dog size screen and dog size data to dog which matches with dog id
     const user = await this.userModel.findOneAndUpdate(
@@ -145,6 +162,19 @@ export class DogService {
       },
     });
 
+    // Add the heavyCoat to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          heavyCoat,
+          nextScreen: QuestionnaireScreenName.COLD_ADAPT_SCREEN,
+          completedStep: 3,
+        },
+        $push: { screens: heavyCoatQuestionnaireScreen },
+      },
+    );
+
     // Add questionnaire heavy coat screen and heavy coat data to dog which matches with dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
@@ -173,20 +203,33 @@ export class DogService {
     userId,
   }: CreateColdAdaptDto): Promise<DogProfile> {
     // Create new questionnaire cold adapt screen
-    const heavyCoatQuestionnaireScreen = new this.questionnaireScreenModel({
+    const coldAdaptQuestionnaireScreen = new this.questionnaireScreenModel({
       coldAdaptScreen: {
         step: 4,
         previousScreen: QuestionnaireScreenName.HEAVY_COAT_SCREEN,
-        nextScreen: QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
+        nextScreen: QuestionnaireScreenName.LOCATION_SCREEN,
         isCompleted: true,
       },
     });
 
-    // Add questionnaire cold adapt screen and cold adapt data to dog which matches with dog id
+    // Add the coldAdapt to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          coldAdapt,
+          nextScreen: QuestionnaireScreenName.LOCATION_SCREEN,
+          completedStep: 4,
+        },
+        $push: { screens: coldAdaptQuestionnaireScreen },
+      },
+    );
+
+    // Add questionnaire coldAdapt screen and coldAdapt data to dog which matches with dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
-        $push: { 'dogs.$[dog].screens': heavyCoatQuestionnaireScreen },
+        $push: { 'dogs.$[dog].screens': coldAdaptQuestionnaireScreen },
         $set: {
           'dogs.$[dog].coldAdapt': coldAdapt,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.LOCATION_SCREEN,
@@ -219,6 +262,19 @@ export class DogService {
       },
     });
 
+    // Add the location to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          location,
+          nextScreen: QuestionnaireScreenName.AVATAR_SELECTION_SCREEN,
+          completedStep: 5,
+        },
+        $push: { screens: locationQuestionnaireScreen },
+      },
+    );
+
     // Add questionnaire location screen and location data to dog which matches with dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
@@ -248,7 +304,7 @@ export class DogService {
     userId,
   }: CreateSelectedAvatarDto): Promise<DogProfile> {
     // Create new questionnaire avatar selection screen
-    const AvatarSelectionQuestionnaireScreen =
+    const avatarSelectionQuestionnaireScreen =
       new this.questionnaireScreenModel({
         avatarSelectionScreen: {
           step: 6,
@@ -258,11 +314,25 @@ export class DogService {
         },
       });
 
+    // Add selected avatar to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          avatar: selectedAvatar,
+          nextScreen: QuestionnaireScreenName.COMPLETION_SCREEN,
+          completedStep: 6,
+          registrationStatus: RegistrationStatus.COMPLETED,
+        },
+        $push: { screens: avatarSelectionQuestionnaireScreen },
+      },
+    );
+
     // Add questionnaire avatar selection screen and avatar selection data to dog which matches with dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
-        $push: { 'dogs.$[dog].screens': AvatarSelectionQuestionnaireScreen },
+        $push: { 'dogs.$[dog].screens': avatarSelectionQuestionnaireScreen },
         $set: {
           'dogs.$[dog].avatar': selectedAvatar,
           'dogs.$[dog].nextScreen': QuestionnaireScreenName.COMPLETION_SCREEN,
@@ -286,6 +356,20 @@ export class DogService {
     userId,
     dogId,
   }: UpdateDogNameDto): Promise<UserProfile> {
+    // update the dog name to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          name,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    // update the dog name to user which matches with user id and dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -307,6 +391,20 @@ export class DogService {
     userId,
     dogId,
   }: UpdateDogSizeDto): Promise<UserProfile> {
+    // update the dog size to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          dogSize,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    // update the dog size to user which matches with user id and dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -328,6 +426,20 @@ export class DogService {
     userId,
     dogId,
   }: UpdateHeavyCoatDto): Promise<UserProfile> {
+    // update the heavy coat to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          heavyCoat,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    // update the heavy coat to user which matches with user id and dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -349,6 +461,20 @@ export class DogService {
     userId,
     dogId,
   }: UpdateColdAdaptDto): Promise<UserProfile> {
+    // update the cold adapt to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          coldAdapt,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    // update the cold adapt to user which matches with user id and dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -370,6 +496,20 @@ export class DogService {
     userId,
     dogId,
   }: UpdateSelectedAvatarDto): Promise<UserProfile> {
+    // update the avatar to dog which matches with dog id
+    await this.dogModel.findOneAndUpdate(
+      { _id: dogId },
+      {
+        $set: {
+          avatar: selectedAvatar,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    // update the avatar to user which matches with user id and dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -390,6 +530,7 @@ export class DogService {
     location,
     userId,
   }: UpdateLocationDto): Promise<UserProfile> {
+    // update the location to user which matches with user id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
@@ -406,6 +547,15 @@ export class DogService {
   }
 
   async deleteDog({ dogId, userId }: DeleteDogDto): Promise<UserProfile> {
+    // Delete dog under which matches with dog id
+    await this.dogModel.deleteOne(
+      { _id: dogId },
+      {
+        new: true,
+      },
+    );
+
+    // Delete dog under user which matches with user id and dog id
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
