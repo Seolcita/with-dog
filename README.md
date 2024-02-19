@@ -1,73 +1,40 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Project Title
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Chilly Dog
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Visit Chilly Dog Live App
+
+[Live app](https://chillydog.vercel.app)
+
+<img width="1421" alt="mainpage" src="https://github.com/Seolcita/chillydog/assets/83251839/326a9cbd-56d6-4446-bd90-dd8a416c0cc6">
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Simplifying Cold Weather Safety for Your Pet
 
-## Installation
+Chilly Dog is an intuitive application that presents real-time weather updates and offers personalized guidance on whether the weather conditions are suitable for a user's dog, taking into account the specific details from the dog's profile. Additionally, it showcases the progress of dog profiles being created. The application is designed with accessibility in mind, ensuring ease of use for all users.
 
-```bash
-$ npm install
-```
+## Usage
 
-## Running the app
+1. Open the application in your web browser(https://chillydog.vercel.app).
+2. Create a profile for your dog, including details like size.
+3. The application will provide real-time weather updates and personalized guidance based on your dog's profile.
 
-```bash
-# development
-$ npm run start
+## Stack & APIs
 
-# watch mode
-$ npm run start:dev
+- Typescript
+- Nest.js
+- MongoDB
+- Rest API
+- OpenWeather API
+- Google Authentication
 
-# production mode
-$ npm run start:prod
-```
+## Visit Chilly Dog Wiki for more details
 
-## Test
+[Chilly Dog Wiki](https://seolhikim-projects.notion.site/seolhikim-projects/8c2bc421a6dc4ffc92203789e1c71c21?v=d4f9eeb6ee7741f58036a7babc2a140f)
 
-```bash
-# unit tests
-$ npm run test
+- Planning, Usecase, Flow chart, etc.
 
-# e2e tests
-$ npm run test:e2e
+## Feedback
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Welcome and encourage feedback. If you have suggestions for improving components, especially in terms of enhancing accessibility, please feel free to open an issue on the GitHub repository [chillydog github for backend(with-dog)](https://github.com/Seolcita/with-dog/issues).
