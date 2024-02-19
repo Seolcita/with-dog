@@ -20,7 +20,7 @@ Chilly Dog is an intuitive application that presents real-time weather updates a
 2. Create a profile for your dog, including details like size.
 3. The application will provide real-time weather updates and personalized guidance based on your dog's profile.
 
-## Stack
+## Stack & APIs
 
 - Typescript
 - Nest.js
